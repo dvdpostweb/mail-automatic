@@ -14,6 +14,7 @@ class Automatic {
 	private $mail_content;
 	private $id;
 	private $name;
+	private $email_test;
 	
 	
 
@@ -41,7 +42,10 @@ class Automatic {
 			$this->script->name=$row['name'];
 			$this->script->setMailId($row['mail_id']);
 			$this->script->initialize();
-			$this->script->execute();
+			if(!empty($this->email_test))
+				$this->script->test($this->email_test);
+			else
+				$this->script->execute();
 			$this->script->finish();
 		}
 	}
@@ -95,7 +99,7 @@ class Automatic {
 		    $text = strip_tags($email_text);
 		    $message->add_html($email_text, $text);
 		    $message->build_message();
-		    //$message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
+		    $message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
 		    $this->setCount();
 	}
 	public function initialize()
@@ -140,6 +144,9 @@ class Automatic {
 			}
 			if($key == 'VERBOSE') {
 				$this->verbose =(($value=="1")?true:false);
+			}
+			if($key == 'EMAIL') {
+				$this->email_test =$value;
 			}
 		}
 		$this->task_options = $options;
