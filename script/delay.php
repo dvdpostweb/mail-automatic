@@ -1,5 +1,5 @@
 <?php
-include('/includes/classes/actions.php');
+include('./classes/actions.php');
 
 class Delay extends Automatic {
 	var $sql;
