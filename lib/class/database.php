@@ -117,7 +117,25 @@ $links=array();
     }
     return $result;
   }
+  function tep_begin()
+  {
+	global $links; 
+	$connect=$links[0];
 
+	mysql_query("START TRANSACTION",$connect);
+  }
+  function tep_commit()
+  {
+    global $links; 
+	$connect=$links[0];
+	mysql_query("COMMIT",$connect);
+  }
+  function tep_rollback()
+  {
+	global $links; 
+	$connect=$links[0];
+	mysql_query("ROLLBACK",$connect); 
+  }
   function tep_db_perform($table, $data, $action = 'insert', $parameters = '', $link = 'db_link') {
     reset($data);
     if ($action == 'insert') {

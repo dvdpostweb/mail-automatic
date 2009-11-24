@@ -15,6 +15,8 @@ class Automatic {
 	private $id;
 	private $name;
 	private $email_test;
+	private $table_select;
+	private $id_select;
 	
 	
 
@@ -33,20 +35,36 @@ class Automatic {
 		while($row=tep_db_fetch_array($query))
 		{
 			
-			include('./script/'.$row['script_name']);
-			$class=explode('.',$row['script_name']);
-			$class_name=$class[0];
-			$this->script = new $class_name();
-			$this->script->setId($row['id']);
-			$this->script->verbose=$this->verbose;
-			$this->script->name=$row['name'];
-			$this->script->setMailId($row['mail_id']);
-			$this->script->initialize();
-			if(!empty($this->email_test))
-				$this->script->test($this->email_test);
+			if(is_file('./script/'.$row['script_name']))
+			{
+				include('./script/'.$row['script_name']);
+				$class=explode('.',$row['script_name']);
+				$class_name=$class[0];
+				$depart=$this->timer();
+		 
+				$this->script = new $class_name();
+				$this->script->setId($row['id']);
+				
+				$this->script->verbose=$this->verbose;
+				$this->script->name=$row['name'];
+				$this->script->setTable($row['table_select']);
+				$this->script->setTableId($row['id_select']);
+				$this->script->setMailId($row['mail_id']);
+				$this->script->initialize();
+				if(!empty($this->email_test))
+					$this->script->execute($this->email_test);
+				else
+					$this->script->execute();
+				$this->script->finish();
+				$fin=$this->timer();
+				 $delai=number_format($fin - $depart,7);
+				 if($this->verbose==true)
+					echo "temps d'execution: ",$delai," secondes.\n"; 
+		 	}
 			else
-				$this->script->execute();
-			$this->script->finish();
+			{
+				echo "le script ".$row['script_name']." est manquant dans le repertoire script\n";
+			}
 		}
 	}
 	public function finish()
@@ -74,6 +92,22 @@ class Automatic {
 	{
 		return $this->id;
 	}
+	public function setTableId($id)
+	{
+		$this->id_select=$id;
+	}
+	public function getTableId()
+	{
+		return $this->id_select;
+	}
+	public function setTable($id)
+	{
+		$this->table_select=$id;
+	}
+	public function getTable()
+	{
+		return $this->table_select;
+	}
 	public function setMailId($id)
 	{
 		$this->mail_id=$id;
@@ -82,6 +116,7 @@ class Automatic {
 	{
 		return $this->mail_id;
 	}
+	
 	public function modif_attributes($html,$modif)
 	{
 		foreach($modif as $key => $value)
@@ -91,7 +126,14 @@ class Automatic {
 		return $html;
 		
 	}
+	private  function timer()
+	 {
+	 $time=explode(' ',microtime());
+	 return $time[1] + $time[2];
+	 }
+	
 	public function send_mail($to_name, $to_email_address,  $from_email_name, $from_email_address,$language,$modif){
+			
 			$email_subject=$this->mail_content[$language]['messages_title'];
  			$email_text=$this->mail_content[$language]['messages_html'];
 			$email_text=$this->modif_attributes($email_text,$modif);
@@ -99,8 +141,22 @@ class Automatic {
 		    $text = strip_tags($email_text);
 		    $message->add_html($email_text, $text);
 		    $message->build_message();
-		    $message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
-		    $this->setCount();
+		    $status=$message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
+			if($status==true)
+			{
+		    	$this->setCount();
+				tep_commit();
+			}
+			else
+			{
+				echo "error : mail (rollback)\n";
+				tep_rollback();
+			}
+	}
+	public function history($id)
+	{
+		$sql='insert into automatic_emails_history (id, mail_messages_id) values ('.$id.','.$this->getMailId().')';
+		return	tep_db_query($sql);
 	}
 	public function initialize()
 	{
@@ -117,12 +173,13 @@ class Automatic {
 		}
 		else
 		{
-			echo "error initilize \n";
+			echo "error initiliaze \n";
 		}
 	}
 		
 	public function mail_history($customers_id,$customers_email,$languages_id,$mail_id)
 	{
+		tep_begin();
 		$sql_insert="INSERT INTO `dvdpost_be_prod`.`mail_messages_sent_history` (`mail_messages_sent_history_id` ,`date` ,`customers_id` ,`mail_messages_id`,`language_id` ,	`mail_opened` ,	`mail_opened_date` ,`customers_email_address`)
 		VALUES (NULL , now(), ".$customers_id.", '".$mail_id."', $languages_id, '0', NULL , '".$customers_email."'	);";
 		
