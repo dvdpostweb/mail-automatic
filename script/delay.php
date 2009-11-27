@@ -22,7 +22,7 @@ class Delay extends Automatic {
 										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_id
 										
 										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status =12 and ae.mail_messages_id IS NULL
-							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY ) GROUP BY o.orders_id	ORDER BY o.orders_id DESC
+							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY ) and o.orders_id =3681836 GROUP BY o.orders_id	ORDER BY o.orders_id DESC
 			limit 1';
 			//AND admindate > "2009-10-01"
 
