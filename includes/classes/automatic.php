@@ -142,7 +142,7 @@ class Automatic {
 		    $message->add_html($email_text, $text);
 		    $message->build_message();
 			
-		    //$status=$message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
+		    $status=$message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
 			if($status==true)
 			{
 		    	$this->setCount();
