@@ -141,7 +141,8 @@ class Automatic {
 		    $text = strip_tags($email_text);
 		    $message->add_html($email_text, $text);
 		    $message->build_message();
-		    $status=$message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
+			
+		    //$status=$message->send($to_name, $to_email_address, $from_email_name, $from_email_address, $email_subject);
 			if($status==true)
 			{
 		    	$this->setCount();
@@ -155,7 +156,7 @@ class Automatic {
 	}
 	public function history($id)
 	{
-		$sql='insert into automatic_emails_history (id, mail_messages_id) values ('.$id.','.$this->getMailId().')';
+		$sql='insert into automatic_emails_history (id, mail_messages_id,class_id) values ('.$id.','.$this->getMailId().','.$this->getId().')';
 		return	tep_db_query($sql);
 	}
 	public function initialize()

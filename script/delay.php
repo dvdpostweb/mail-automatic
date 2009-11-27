@@ -1,5 +1,6 @@
 <?php
-include('./classes/actions.php');
+$root=((!empty($_SERVER['DOCUMENT_ROOT']))?$_SERVER['DOCUMENT_ROOT']:$_SERVER['PWD']);
+include($root.'/includes/classes/actions.php');
 
 class Delay extends Automatic {
 	var $sql;
@@ -14,23 +15,24 @@ class Delay extends Automatic {
 		if(!empty($mail_id))
 		{
 			
-			$this->sql='SELECT DISTINCT o.orders_id , c.products_id, o.customers_email_address, c.language_id, o.customers_id, p.products_name
-							FROM orders o
-							JOIN custserv c ON o.orders_id = c.orders_id and c.custserv_cat_id=3
-							JOIN products_description p ON p.products_id = c.products_id and p.language_id = 1
-							LEFT JOIN automatic_emails_history a ON '.$this->getTable().'.'.$this->getTableId().' = a.id AND a.mail_messages_id =  '.$this->getMailId().'
-							WHERE orders_status =12 and a.mail_messages_id IS NULL
-							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY ) 	ORDER BY o.orders_id DESC
+			$this->sql='SELECT o.orders_id , cs.products_id, o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
+										FROM orders o
+										JOIN custserv cs ON o.orders_id = cs.orders_id and cs.custserv_cat_id=3
+										join customers c on c.customers_id = o.customers_id
+										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_id
+										
+										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status =12 and ae.mail_messages_id IS NULL
+							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY ) GROUP BY o.orders_id	ORDER BY o.orders_id DESC
 			limit 1';
 			//AND admindate > "2009-10-01"
 
-			//echo $this->sql;
+			#echo $this->sql;
 			
 			$query=tep_db_query($this->sql);
 			
 			while($row=tep_db_fetch_array($query))
 			{
-				$language=$row['language_id'];
+				$language=$row['customers_language'];
 				if(empty($email))
 				{
 					
@@ -46,6 +48,16 @@ class Delay extends Automatic {
 				if($status==true){
 					$actions=new actions();
 					$uniqid=$actions->createKey($row['customers_id'],3,$row['orders_id']);
+					switch(strtolower($row['customers_country']))
+					{
+						case 'nederlands':
+							$host='www.dvdpost.nl';
+						break;
+						case 21:
+						default:
+							$host='www.dvdpost.be';
+						
+					}
 					$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
 					$this->modif=array('[titre]'=>$row['products_name'],'[url]'=>$url);
 					if(empty($email))
