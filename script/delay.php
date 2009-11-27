@@ -15,11 +15,11 @@ class Delay extends Automatic {
 		if(!empty($mail_id))
 		{
 			
-			$this->sql='SELECT o.orders_id , cs.products_id, o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
+			$this->sql='SELECT o.orders_id , cs.products_id,o.customers_name,o.customers_street_address,o.customers_city,o.customers_postcode, date_format(o.date_purchased,"%d/%m/%Y") as date_purchased ,o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
 										FROM orders o
 										JOIN custserv cs ON o.orders_id = cs.orders_id and cs.custserv_cat_id=3
 										join customers c on c.customers_id = o.customers_id
-										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_id
+										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_language
 										
 										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status =12 and ae.mail_messages_id IS NULL
 							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY )  GROUP BY o.orders_id	ORDER BY o.orders_id DESC
@@ -59,7 +59,7 @@ class Delay extends Automatic {
 						
 					}
 					$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
-					$this->modif=array('[name]'=>$row['customers_name'],'[address]'=>$row['customers_street_address'].' '.$row['customers_city'].' '.$row['customers_postcode'],'[date]'=>$row['date_purcahsed'],'[url]'=>$url,'[titel]'=>$row['products_name']);
+					$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$row['products_name']);
 					if(empty($email))
 					{
 						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'noreply@dvdpost.be', 'noreply@dvdpost.be',$language,$this->modif);
