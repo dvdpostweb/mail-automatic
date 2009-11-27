@@ -59,7 +59,7 @@ class Delay extends Automatic {
 						
 					}
 					$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
-					$this->modif=array('[titel]'=>$row['products_name'],'[name]'=>$row['customers_firstname'],'[address]'=>$row['customers_street_address'].' '.$row['customers_city'].' '.$row['customers_postcode'],'[date]'=>$row['date_purcahsed'],'[url]'=>$url);
+					$this->modif=array('[name]'=>$row['customers_name'],'[address]'=>$row['customers_street_address'].' '.$row['customers_city'].' '.$row['customers_postcode'],'[date]'=>$row['date_purcahsed'],'[url]'=>$url,'[titel]'=>$row['products_name']);
 					if(empty($email))
 					{
 						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'noreply@dvdpost.be', 'noreply@dvdpost.be',$language,$this->modif);
