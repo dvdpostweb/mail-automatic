@@ -1,6 +1,6 @@
 <?php
 
-class Delay extends Automatic {
+class Survey extends Automatic {
 	var $sql;
 	var $modif;
 	function __construct() {
@@ -13,18 +13,13 @@ class Delay extends Automatic {
 		if(!empty($mail_id))
 		{
 			
-			$this->sql='SELECT o.orders_id , cs.products_id,o.customers_name,o.customers_street_address,o.customers_city,o.customers_postcode, date_format(o.date_purchased,"%d/%m/%Y") as date_purchased ,o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
-										FROM orders o
-										JOIN custserv cs ON o.orders_id = cs.orders_id and cs.custserv_cat_id=3
-										join customers c on c.customers_id = o.customers_id
-										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_language
-										
-										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status =12 and ae.mail_messages_id IS NULL
-							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY )  GROUP BY o.orders_id	ORDER BY o.orders_id DESC
-			limit 1';
+			$this->sql='SELECT cas.id,c.customers_id, customers_language ,entry_country_id,customers_email_address FROM customers_abo_stop cas
+			 join customers c on cas.customers_id = c.customers_id 
+			 join address_book a on a.customers_id = c.customers_id and a.address_book_id = c.customers_default_address_id
+			 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where cas.customers_id = 206183 and date_stop < now()+10 and ae.mail_messages_id IS NULL';
 			//AND admindate > "2009-10-01"
 
-			#echo $this->sql;
+			echo $this->sql."\n";
 			
 			$query=tep_db_query($this->sql);
 			
@@ -35,7 +30,7 @@ class Delay extends Automatic {
 				{
 					
 					$history_id=$this->mail_history($row['customers_id'],$row['customers_email_address'],$language,$mail_id);
-					$status=$this->history($row['orders_id']);
+					$status=$this->history($row['id']);
 					
 				}
 				else
@@ -44,11 +39,18 @@ class Delay extends Automatic {
 					$status=true;
 				}
 				if($status==true){
-					$actions=new actions();
-					//$uniqid=$actions->createKey($row['customers_id'],3,$row['orders_id']);
-					switch(strtolower($row['customers_country']))
+					$sql='insert into actions_key (customers_id ,actions_id , `key`) values ('.$row['customers_id'].',"4",uuid())';
+					tep_db_query($sql);
+					$id=tep_db_insert_id();
+					$sql_select='select * from actions_key where id ='.$id;
+					$query_select=tep_db_query($sql_select);
+					$row_select=tep_db_fetch_array($query_select);
+					
+					$uniqid=$row_select['key'];
+					
+					switch(strtolower($row['entry_country_id']))
 					{
-						case 'nederlands':
+						case '150':
 							$host='www.dvdpost.nl';
 						break;
 						case 21:
