@@ -16,10 +16,10 @@ class Survey extends Automatic {
 			$this->sql='SELECT cas.id,c.customers_id, customers_language ,entry_country_id,customers_email_address FROM customers_abo_stop cas
 			 join customers c on cas.customers_id = c.customers_id 
 			 join address_book a on a.customers_id = c.customers_id and a.address_book_id = c.customers_default_address_id
-			 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where cas.customers_id = 206183 and date_stop < now()+10 and ae.mail_messages_id IS NULL';
+			 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where date_stop>"2009-09-01" and date_stop < now()+10 and ae.mail_messages_id IS NULL';
 			//AND admindate > "2009-10-01"
 
-			echo $this->sql."\n";
+			#echo $this->sql."\n";
 			
 			$query=tep_db_query($this->sql);
 			
@@ -59,10 +59,10 @@ class Survey extends Automatic {
 						
 					}
 					$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
-					$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$row['products_name']);
+					$this->modif=array('$$$logo_dvdpost$$$'=>$host,'[url]'=>$url);
 					if(empty($email))
 					{
-						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'noreply@dvdpost.be', 'noreply@dvdpost.be',$language,$this->modif);
+						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'dvdpost@dvdpost.be', 'dvdpost@dvdpost.be',$language,$this->modif);
 					}
 					else
 					{
