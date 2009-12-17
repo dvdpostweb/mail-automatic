@@ -52,12 +52,12 @@ class Survey extends Automatic {
 					{
 						case '150':
 							$host='www.dvdpost.nl';
-							$logo='http://www.dvdpost.nl/images/www3/logonl.jpg';
+							$logo='<img src="http://www.dvdpost.nl/images/www3/logonl.jpg" />';
 						break;
 						case 21:
 						default:
 							$host='www.dvdpost.be';
-							$logo='http://www.dvdpost.be/images/www3/logo.jpg';
+							$logo='<img src="http://www.dvdpost.be/images/www3/logo.jpg" />';
 							
 						
 					}
