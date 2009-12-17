@@ -52,21 +52,25 @@ class Survey extends Automatic {
 					{
 						case '150':
 							$host='www.dvdpost.nl';
+							$logo='http://www.dvdpost.nl/images/www3/logonl.jpg';
 						break;
 						case 21:
 						default:
 							$host='www.dvdpost.be';
+							$logo='http://www.dvdpost.be/images/www3/logo.jpg';
+							
 						
 					}
 					$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
-					$this->modif=array('$$$logo_dvdpost$$$'=>$host,'[url]'=>$url);
+					
+					$this->modif=array('$$$logo_dvdpost$$$'=>$logo,'[url]'=>$url);
 					if(empty($email))
 					{
 						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'dvdpost@dvdpost.be', 'dvdpost@dvdpost.be',$language,$this->modif);
 					}
 					else
 					{
-						$this->send_mail( $email, $email, 'noreply@dvdpost.be', 'noreply@dvdpost.be',$language,$this->modif);
+						$this->send_mail( $email, $email, 'dvdpost@dvdpost.be', 'dvdpost@dvdpost.be',$language,$this->modif);
 						break;
 					}
 				}
