@@ -68,11 +68,11 @@ class Delay extends Automatic {
 					$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$row['products_name']);
 					if(empty($email))
 					{
-						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'dvdpost@dvdpost.be', 'dvdpost@dvdpost.be',$language,$this->modif);
+						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
 					}
 					else
 					{
-						$this->send_mail( $email, $email, 'noreply@dvdpost.be', 'noreply@dvdpost.be',$language,$this->modif);
+						$this->send_mail( $email, $email, 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
 						break;
 					}
 				}
