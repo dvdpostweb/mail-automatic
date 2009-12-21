@@ -44,8 +44,16 @@ class Delay extends Automatic {
 					$status=true;
 				}
 				if($status==true){
-					$actions=new actions();
+					//$actions=new actions();
 					//$uniqid=$actions->createKey($row['customers_id'],3,$row['orders_id']);
+					$sql='insert into actions_key (customers_id ,actions_id , `key`) values ('.$row['customers_id'].',"3",uuid())';
+					tep_db_query($sql);
+					$id=tep_db_insert_id();
+					$sql_select='select * from actions_key where id ='.$id;
+					$query_select=tep_db_query($sql_select);
+					$row_select=tep_db_fetch_array($query_select);
+
+					$uniqid=$row_select['key'];
 					switch(strtolower($row['customers_country']))
 					{
 						case 'nederlands':
