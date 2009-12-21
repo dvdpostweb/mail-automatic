@@ -134,7 +134,7 @@ class Automatic {
 	
 	public function send_mail($to_name, $to_email_address,  $from_email_name, $from_email_address,$language,$modif){
 			
-			$email_subject=$this->mail_content[$language]['messages_title'];
+			$email_subject=$this->mail_content[$language]['messages_subject'];
  			$email_text=$this->mail_content[$language]['messages_html'];
 			$email_text=$this->modif_attributes($email_text,$modif);
 		    $message = new email(array('X-Mailer: osC mailer'));
