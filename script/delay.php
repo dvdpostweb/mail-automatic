@@ -19,9 +19,9 @@ class Delay extends Automatic {
 										join customers c on c.customers_id = o.customers_id
 										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_language
 										
-										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status =12 and ae.mail_messages_id IS NULL
-							AND now( ) > DATE_ADD( admindate, INTERVAL 5 DAY )  GROUP BY o.orders_id	ORDER BY o.orders_id DESC
-			limit 1';
+										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status =12 and ae.mail_messages_id IS NULL AND admindate > "2009-12-01"
+							AND now( ) > DATE_ADD( admindate, INTERVAL 3 DAY )  GROUP BY o.orders_id 	ORDER BY o.orders_id DESC
+			';
 			//AND admindate > "2009-10-01"
 
 			#echo $this->sql;
@@ -42,42 +42,67 @@ class Delay extends Automatic {
 				{
 					$history_id=0;
 					$status=true;
+					$row['customers_id']=206183;
 				}
 				if($status==true){
 					//$actions=new actions();
 					//$uniqid=$actions->createKey($row['customers_id'],3,$row['orders_id']);
 					$sql='insert into actions_key (customers_id ,actions_id , `key`) values ('.$row['customers_id'].',"3",uuid())';
-					tep_db_query($sql);
-					$id=tep_db_insert_id();
-					$sql_select='select * from actions_key where id ='.$id;
-					$query_select=tep_db_query($sql_select);
-					$row_select=tep_db_fetch_array($query_select);
+					$status=tep_db_query($sql);
+					if($status)
+					{
+						$id=tep_db_insert_id();
+						$sql_select='select * from actions_key where id ='.$id;
+						$query_select=tep_db_query($sql_select,'db_config',true);
+						$row_select=tep_db_fetch_array($query_select);
 
-					$uniqid=$row_select['key'];
-					switch(strtolower($row['customers_country']))
-					{
-						case 'nederlands':
-							$host='www.dvdpost.nl';
-						break;
-						case 21:
-						default:
-							$host='www.dvdpost.be';
+						$uniqid=$row_select['key'];
+						switch(strtolower($row['customers_country']))
+						{
+							case 'nederlands':
+								$host='www.dvdpost.nl';
+							break;
+							case 21:
+							default:
+								$host='www.dvdpost.be';
 						
-					}
-					$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
-					$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$row['products_name']);
-					if(empty($email))
-					{
-						$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
+						}
+						$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
+					
+					
+					
+						$custserv_message_query = tep_db_query("select * from custserv_auto_answer where language_id = '" . $language. "' and custserv_auto_answer_id = 21 ");  
+						$custserv_message = tep_db_fetch_array($custserv_message_query);
+						$modif=array('[customers_name]'=>$row['customers_name'],'[title]'=>$row['products_name'],'[mail]'=>$row['customers_email_address']);
+						$html=$this->modif_attributes($custserv_message['messages_html'],$modif);
+						$sql="INSERT INTO custserv (customers_id , language_id , custserv_cat_id , customer_date , subject,message,adminby ,admindate) VALUES ('" . $row['customers_id']. "', '" . $language . "', '6', now(), '" .addslashes($custserv_message['custserv_auto_answer_comment'])  ."','" . addslashes($html)."',99,now())" ;
+					    $status=tep_db_query($sql);
+						if(!$status)
+						{
+							echo "error: custserv (rollback) \n";
+							tep_rollback();
+						
+						}
+						else
+						{
+							$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$row['products_name']);
+							if(empty($email))
+							{
+								$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
+							}
+							else
+							{
+								$this->send_mail( $email, $email, 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
+								break;
+							}
+						}
 					}
 					else
 					{
-						$this->send_mail( $email, $email, 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
-						break;
+						echo "error: action (rollback) \n";
+						tep_rollback();
 					}
-				}
-				else
-				{
+				}else{
 					echo "error: history (rollback) \n";
 					tep_rollback();
 				}
