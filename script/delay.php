@@ -47,7 +47,7 @@ class Delay extends Automatic {
 				if($status==true){
 					//$actions=new actions();
 					//$uniqid=$actions->createKey($row['customers_id'],3,$row['orders_id']);
-					$sql='insert into actions_key (customers_id ,actions_id , `key`) values ('.$row['customers_id'].',"3",uuid())';
+					$sql='insert into actions_key (customers_id ,actions_id , `key`,ref_id) values ('.$row['customers_id'].',"3",uuid(),'.$row['orders_id'].')';
 					$status=tep_db_query($sql);
 					if($status)
 					{
