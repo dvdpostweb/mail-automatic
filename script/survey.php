@@ -15,8 +15,8 @@ class Survey extends Automatic {
 			
 			$this->sql='SELECT cas.id,c.customers_id, customers_language ,entry_country_id,customers_email_address FROM customers_abo_stop cas
 			 join customers c on cas.customers_id = c.customers_id 
-			 join address_book a on a.customers_id = c.customers_id and a.address_book_id = c.customers_default_address_id
-			 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where date_stop>"2009-09-01" and now( ) > DATE_ADD( date_stop, INTERVAL 10 DAY ) and ae.mail_messages_id IS NULL';
+			 left join address_book a on a.customers_id = c.customers_id and a.address_book_id = c.customers_default_address_id
+			 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where date_stop>"2009-09-01" and date(now()) > DATE_ADD( date_stop, INTERVAL 10 DAY ) and ae.mail_messages_id IS NULL';
 			//AND admindate > "2009-10-01"
 
 			#echo $this->sql."\n";

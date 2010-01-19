@@ -10,19 +10,19 @@ $db_config = array(
 
 	'test' 	=> array(
 			'type' 			=> 'mysql',
-			'host' 			=> 'binga',
+			'host' 			=> 'matadi',
 			'port'			=> 3306,
-			'database' 	=> 'dvdpost_be_prod',
-			'user' 			=> 'test_webuser',
-			'password' 	=> 'd0mosol0'
+			'database' 	=> 'dvdpost_test',
+			'user' 			=> 'webuser',
+			'password' 	=> '3gallfir-'
 	),
 	'production' 		=> array(
 			'type' 			=> 'mysql',
 			'host' 			=> 'matadi',
 			'port'			=> 0,
 			'database' 	=> 'dvdpost_be_prod',
-			'user' 			=> 'root',
-			'password' 	=> '(:melissa:)'
+			'user' 			=> 'webuser',
+			'password' 	=> '3gallfir-'
 	)
 );
 

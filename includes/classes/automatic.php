@@ -6,6 +6,8 @@ class Automatic {
 	private $db = null; //reference to our DB connection
 	private $db_config = array(); //all available DB configs (e.g. test,development, production)
 	private $ENV = "test"; //default (can also be one 'test', 'production')
+	private $debug = false; //default (can also be one 'test', 'production')
+	
 	private $verbose=false;
 	private $task_options;
 	private $script;
@@ -28,7 +30,37 @@ class Automatic {
 		
 	}
 	
-	
+	public function get_count_movies($type='all')
+	{
+		if($type=='all')
+			$sql="select count(products_id) as cpt from products where products_status >-1 and  `products_product_type` = 'movie'";
+		else
+			$sql="select count(products_id) as cpt from products where products_status >-1 and  `products_product_type` = 'movie' AND products_media = 'blueray'";
+		$count_dvd_query=tep_db_query($sql);
+		$row=tep_db_fetch_array($count_dvd_query);
+		$cpt_catalog=ceil($row['cpt']/1000)*1000;
+		if($type=='all')
+			$cpt_catalog=25000;
+		
+			$cpt_movies[1] = number_format($cpt_catalog, 0, '.', ' ');
+			$cpt_movies[2] = number_format($cpt_catalog, 0, '.', '.');
+			$cpt_movies[3] = number_format($cpt_catalog, 0, '.', ',');
+			
+		return $cpt_movies;
+	}
+	public function get_count_customers()
+	{
+		$sql="SELECT count(1) as cpt FROM `customers` WHERE `customers_abo` =1";
+		$count_dvd_query=tep_db_query($sql);
+		$row=tep_db_fetch_array($count_dvd_query);
+		$cpt_catalog=ceil($row['cpt']/1000)*1000;
+		
+			$cpt_movies[1] = number_format($cpt_catalog, 0, '.', ' ');
+			$cpt_movies[2] = number_format($cpt_catalog, 0, '.', '.');
+			$cpt_movies[3] = number_format($cpt_catalog, 0, '.', ',');
+			
+		return $cpt_movies;
+	}
 	public function execute(){
 		$sql='SELECT * FROM automatic_emails where status="active" and date_format(now(),"%H")=exe_time';
 		$query=tep_db_query($sql);
@@ -46,6 +78,8 @@ class Automatic {
 				$this->script->setId($row['id']);
 				
 				$this->script->verbose=$this->verbose;
+				$this->script->debug=$this->debug;
+				
 				$this->script->name=$row['name'];
 				$this->script->setTable($row['table_select']);
 				$this->script->setTableId($row['id_select']);
@@ -116,7 +150,10 @@ class Automatic {
 	{
 		return $this->mail_id;
 	}
-	
+	public function getDebug()
+	{
+		return $this->debug;
+	}
 	public function modif_attributes($html,$modif)
 	{
 		foreach($modif as $key => $value)
@@ -181,7 +218,7 @@ class Automatic {
 	public function mail_history($customers_id,$customers_email,$languages_id,$mail_id)
 	{
 		tep_begin();
-		$sql_insert="INSERT INTO `dvdpost_be_prod`.`mail_messages_sent_history` (`mail_messages_sent_history_id` ,`date` ,`customers_id` ,`mail_messages_id`,`language_id` ,	`mail_opened` ,	`mail_opened_date` ,`customers_email_address`)
+		$sql_insert="INSERT INTO `mail_messages_sent_history` (`mail_messages_sent_history_id` ,`date` ,`customers_id` ,`mail_messages_id`,`language_id` ,	`mail_opened` ,	`mail_opened_date` ,`customers_email_address`)
 		VALUES (NULL , now(), ".$customers_id.", '".$mail_id."', $languages_id, '0', NULL , '".$customers_email."'	);";
 		
 		tep_db_query($sql_insert);
@@ -199,6 +236,9 @@ class Automatic {
 				$options[$key] = $value;
 			if($key == 'ENV') {
 				$this->ENV = $value;
+			}
+			if($key == 'DEBUG') {
+				$this->debug = (($value=="1")?true:false);
 			}
 			if($key == 'VERBOSE') {
 				$this->verbose =(($value=="1")?true:false);
