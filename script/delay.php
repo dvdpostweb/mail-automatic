@@ -13,8 +13,9 @@ class Delay extends Automatic {
 		if(!empty($mail_id))
 		{
 			
-			$this->sql='SELECT o.orders_id , cs.products_id,o.customers_name,o.customers_street_address,o.customers_city,o.customers_postcode, date_format(o.date_purchased,"%d/%m/%Y") as date_purchased ,o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
+			$this->sql='SELECT o.orders_id , cs.products_id,o.customers_name,o.customers_street_address,o.customers_city,o.customers_postcode,products_dvd, date_format(o.date_purchased,"%d/%m/%Y") as date_purchased ,o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
 										FROM orders o
+										join orders_products od on o.orders_id=od.orders_id
 										JOIN custserv cs ON o.orders_id = cs.orders_id and cs.custserv_cat_id=3
 										join customers c on c.customers_id = o.customers_id
 										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_language
@@ -25,7 +26,10 @@ class Delay extends Automatic {
 			//AND admindate > "2009-10-01"
 
 			#echo $this->sql;
-			
+			if($this->getDebug()==true)
+			{
+				echo "\n".$this->sql."\n\n";
+			}
 			$query=tep_db_query($this->sql);
 			
 			while($row=tep_db_fetch_array($query))
@@ -73,7 +77,8 @@ class Delay extends Automatic {
 					
 						$custserv_message_query = tep_db_query("select * from custserv_auto_answer where language_id = '" . $language. "' and custserv_auto_answer_id = 21 ");  
 						$custserv_message = tep_db_fetch_array($custserv_message_query);
-						$modif=array('[customers_name]'=>$row['customers_name'],'[title]'=>$row['products_name'],'[mail]'=>$row['customers_email_address']);
+						$title=$row['products_name'].' ['.$row['products_id'].' - '.$row['products_dvd'].']';
+						$modif=array('[customers_name]'=>$row['customers_name'],'[title]'=>$title,'[mail]'=>$row['customers_email_address']);
 						$html=$this->modif_attributes($custserv_message['messages_html'],$modif);
 						$sql="INSERT INTO custserv (customers_id , language_id , custserv_cat_id , customer_date , subject,message,adminby ,admindate) VALUES ('" . $row['customers_id']. "', '" . $language . "', '6', now(), '" .addslashes($custserv_message['custserv_auto_answer_comment'])  ."','" . addslashes($html)."',99,now())" ;
 					    $status=tep_db_query($sql);
@@ -85,7 +90,7 @@ class Delay extends Automatic {
 						}
 						else
 						{
-							$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$row['products_name']);
+							$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$title);
 							if(empty($email))
 							{
 								$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
