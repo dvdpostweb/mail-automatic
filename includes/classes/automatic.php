@@ -69,7 +69,7 @@ class Automatic {
 			
 			if(is_file('./script/'.$row['script_name']))
 			{
-				include('./script/'.$row['script_name']);
+				include_once('./script/'.$row['script_name']);
 				$class=explode('.',$row['script_name']);
 				$class_name=$class[0];
 				$depart=$this->timer();
