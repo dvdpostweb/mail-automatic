@@ -72,13 +72,13 @@ class Step31 extends Automatic {
 				 FROM customers c
 				 JOIN discount_code dc ON c.`activation_discount_code_id` = dc.discount_code_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
-				 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where customers_info_date_account_created> "'.self::DATE_FROM.'" and date(now()) > DATE_ADD( customers_info_date_account_created, INTERVAL '.$after.' DAY ) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.') AND `activation_discount_code_type` = "d" and ae.mail_messages_id IS NULL
+				 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where customers_info_date_account_created> "'.self::DATE_FROM.'" and date(now()) > DATE_ADD( customers_info_date_account_created, INTERVAL '.$after.' DAY ) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.') AND `activation_discount_code_type` = "d" and ae.mail_messages_id IS NULL and dc.group_id !=152
 							)union(
 				SELECT c.customers_id,c.customers_id as id, customers_language,entityid, customers_email_address,activation_code as code,1 as abo_type, 0 as abo_value, validity_type as type,validity_value as value,abo_dvd_credit ,pa.qty_credit
 				 FROM customers c
 				 JOIN activation_code dc ON c.`activation_discount_code_id` = dc.activation_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
-				 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where customers_info_date_account_created> "'.self::DATE_FROM.'" and date(now()) > DATE_ADD( customers_info_date_account_created, INTERVAL '.$after.' DAY ) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.') AND `activation_discount_code_type` = "a" and  ae.mail_messages_id IS NULL )';				
+				 LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' where customers_info_date_account_created> "'.self::DATE_FROM.'" and date(now()) > DATE_ADD( customers_info_date_account_created, INTERVAL '.$after.' DAY ) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.') AND `activation_discount_code_type` = "a" and  ae.mail_messages_id IS NULL and dc.activation_group!=152 )';				
 			
 			if($this->getDebug()==true)
 			{
