@@ -18,7 +18,7 @@ $db_config = array(
 	),
 	'production' 		=> array(
 			'type' 			=> 'mysql',
-			'host' 			=> 'matadi',
+			'host' 			=> '192.168.100.204',
 			'port'			=> 0,
 			'database' 	=> 'dvdpost_be_prod',
 			'user' 			=> 'webuser',
