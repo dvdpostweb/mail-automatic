@@ -1,123 +1,66 @@
 <?php
 
-class Delay extends Automatic {
-	var $sql;
-	var $modif;
+class Delay extends Script {
+	var $mail;
+	var $data;
+	
+	private $formating;
+	
 	function __construct() {
-		
+		$this->email_process = new EmailProcess();
 	}
-	public function execute($email='')
+	public function execute()
 	{
-		$mail_id=$this->getMailId();
-		
-		if(!empty($mail_id))
-		{
-			
-			$this->sql='SELECT o.orders_id , cs.products_id,o.customers_name,o.customers_street_address,o.customers_city,o.customers_postcode,products_dvd, date_format(o.date_purchased,"%d/%m/%Y") as date_purchased ,o.customers_email_address, c.customers_language , o.customers_id, p.products_name,o.customers_country
+			$sql_data='SELECT o.orders_id ,o.customers_name as name,o.customers_name, date_format(o.date_purchased,"%d/%m/%Y") as date ,o.customers_email_address as mail,o.customers_email_address as customers_email, c.customers_language , o.customers_id, p.products_name,o.customers_country, CONCAT(p.products_name," [",p.products_id," - ",products_dvd,"]") as title, concat(o.customers_street_address," ",o.customers_postcode," ",o.customers_city) as address
 										FROM orders o
 										join orders_products od on o.orders_id=od.orders_id
 										JOIN custserv cs ON o.orders_id = cs.orders_id and cs.custserv_cat_id=3
 										join customers c on c.customers_id = o.customers_id
 										JOIN products_description p ON p.products_id = cs.products_id and p.language_id = c.customers_language
-										
-										LEFT JOIN automatic_emails_history ae ON '.$this->getTable().'.'.$this->getTableId().' = ae.id AND ae.mail_messages_id =  '.$this->getMailId().' AND ae.class_id='.$this->getId().' WHERE orders_status  in (12 , 17)  and ae.mail_messages_id IS NULL AND admindate > "2009-12-01"
-							AND date(now()) > DATE_ADD( admindate, INTERVAL 3 DAY )  GROUP BY o.orders_id 	ORDER BY o.orders_id DESC
-			';
-			//AND admindate > "2009-10-01"
-
-			#echo $this->sql;
-			if($this->getDebug()==true)
+										WHERE orders_status  in (12 , 17) AND admindate > "2009-12-01"
+							AND date(now()) = date(DATE_ADD( admindate, INTERVAL 3 DAY ))  GROUP BY o.orders_id 	ORDER BY o.orders_id DESC;';
+		$this->data = tep_db_query($sql_data);
+	}
+	function add_data_row($data)
+	{
+		$sql='insert into actions_key (customers_id ,actions_id , `key`,ref_id) values ('.$data['customers_id'].',"3",uuid(),'.$data['orders_id'].')';
+		$status=tep_db_query($sql);
+		if($status)
+		{
+			$id=tep_db_insert_id();
+			$sql_select='select * from actions_key where id ='.$id;
+			$query_select=tep_db_query($sql_select,'db_config',true);
+			$row_select=tep_db_fetch_array($query_select);
+			$uniqid=$row_select['key'];
+			switch(strtolower($data['customers_country']))
 			{
-				echo "\n".$this->sql."\n\n";
+				case 'nederlands':
+					$host='www.dvdpost.nl';
+				break;
+				case 21:
+				default:
+					$host='www.dvdpost.be';
 			}
-			$query=tep_db_query($this->sql);
-			
-			while($row=tep_db_fetch_array($query))
-			{
-				$language=$row['customers_language'];
-				if(empty($email))
-				{
-					
-					$history_id=$this->mail_history($row['customers_id'],$row['customers_email_address'],$language,$mail_id);
-					$status=$this->history($row['orders_id']);
-					
-				}
-				else
-				{
-					$history_id=0;
-					$status=true;
-					$row['customers_id']=206183;
-				}
-				if($status==true){
-					//$actions=new actions();
-					//$uniqid=$actions->createKey($row['customers_id'],3,$row['orders_id']);
-					$sql='insert into actions_key (customers_id ,actions_id , `key`,ref_id) values ('.$row['customers_id'].',"3",uuid(),'.$row['orders_id'].')';
-					$status=tep_db_query($sql);
-					if($status)
-					{
-						$id=tep_db_insert_id();
-						$sql_select='select * from actions_key where id ='.$id;
-						$query_select=tep_db_query($sql_select,'db_config',true);
-						$row_select=tep_db_fetch_array($query_select);
-
-						$uniqid=$row_select['key'];
-						switch(strtolower($row['customers_country']))
-						{
-							case 'nederlands':
-								$host='www.dvdpost.nl';
-							break;
-							case 21:
-							default:
-								$host='www.dvdpost.be';
-						
-						}
-						$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
-					
-					
-					
-						$custserv_message_query = tep_db_query("select * from custserv_auto_answer where language_id = '" . $language. "' and custserv_auto_answer_id = 21 ");  
-						$custserv_message = tep_db_fetch_array($custserv_message_query);
-						$title=$row['products_name'].' ['.$row['products_id'].' - '.$row['products_dvd'].']';
-						$modif=array('[customers_name]'=>$row['customers_name'],'[title]'=>$title,'[mail]'=>$row['customers_email_address']);
-						$html=$this->modif_attributes($custserv_message['messages_html'],$modif);
-						$sql="INSERT INTO custserv (customers_id , language_id , custserv_cat_id , customer_date , subject,message,adminby ,admindate) VALUES ('" . $row['customers_id']. "', '" . $language . "', '6', now(), '" .addslashes($custserv_message['custserv_auto_answer_comment'])  ."','" . addslashes($html)."',99,now())" ;
-					    $status=tep_db_query($sql);
-						if(!$status)
-						{
-							echo "error: custserv (rollback) \n";
-							tep_rollback();
-						
-						}
-						else
-						{
-							$this->modif=array('[name]'=>$row['customers_name'],'[host]'=>$host,'[address]'=>$row['customers_street_address'].' '.$row['customers_postcode'].' '.$row['customers_city'],'[date]'=>$row['date_purchased'],'[url]'=>$url,'[titel]'=>$title);
-							if(empty($email))
-							{
-								$this->send_mail( $row['customers_email_address'], $row['customers_email_address'], 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
-							}
-							else
-							{
-								$this->send_mail( $email, $email, 'delay@dvdpost.be', 'delay@dvdpost.be',$language,$this->modif);
-								break;
-							}
-						}
-					}
-					else
-					{
-						echo "error: action (rollback) \n";
-						tep_rollback();
-					}
-				}else{
-					echo "error: history (rollback) \n";
-					tep_rollback();
-				}
-			}
-			
+			$url='http://'.$host.'/actions.php?uniq_id='.$uniqid;
+			$data['host']=$host;
+			$data['url']=$url;
 		}
 		else
 		{
-			echo "error mail id null\n";
+			return false;
 		}
+		return $data;
 	}
+	function post_process($data)
+	{
+		$custserv_message_query = tep_db_query("select * from custserv_auto_answer where language_id = '" . $data['customers_language']. "' and custserv_auto_answer_id = 21 ");  
+		$custserv_message = tep_db_fetch_array($custserv_message_query);
+		//$html=$this->modif_attributes($custserv_message['messages_html'],$modif);
+		$html = $this->email_process->format($custserv_message['messages_html'],$data,false);
+		$sql="INSERT INTO custserv (customers_id , language_id , custserv_cat_id , customer_date , subject,message,adminby ,admindate) 
+		VALUES ('" . $data['customers_id']. "', '" . $data['customers_language'] . "', '6', now(), '" .addslashes($custserv_message['custserv_auto_answer_comment'])  ."','" . addslashes($html)."',99,now())" ;
+    $status=tep_db_query($sql);
+		return $status;
+	}				
 }
 ?>
