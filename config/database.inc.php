@@ -20,7 +20,7 @@ $db_config = array(
 			'type' 			=> 'mysql',
 			'host' 			=> '192.168.100.204',
 			'port'			=> 0,
-			'database' 	=> 'dvdpost_test',
+			'database' 	=> 'dvdpost_be_prod',
 			'user' 			=> 'webuser',
 			'password' 	=> '3gallfir-'
 	)
