@@ -26,9 +26,15 @@ class Wishlist_Freetest extends Script {
 	function add_data_row($data)
 	{
 		$key='GENDER_'.strtoupper($data['customers_gender']).'_'.$data['customers_language'];
-		echo $key;
 		$data['gender']=$this->get_key($key);
-		var_dump($data);
+		if($data['size']==0)
+		{
+			$data['situation']=$this->get_key('SIZE_NULL_'.$data['customers_language']);
+		}
+		else
+		{
+			$data['situation']=sprintf($this->get_key('SIZE_FEW_'.$data['customers_language']),$data['size']);
+		}
 		return $data;
 	}
 	/*function post_process($data)

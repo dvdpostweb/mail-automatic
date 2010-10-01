@@ -27,6 +27,14 @@ class Wishlist_paid_reply extends Script {
 	{
 		$key='GENDER_'.strtoupper($data['customers_gender']).'_'.$data['customers_language'];
 		$data['gender']=$this->get_key($key);
+		if($data['size']==0)
+		{
+			$data['situation']=$this->get_key('SIZE_NULL_'.$data['customers_language']);
+		}
+		else
+		{
+			$data['situation']=sprintf($this->get_key('SIZE_FEW_'.$data['customers_language']),$data['size']);
+		}
 		return $data;
 	}
 	/*function post_process($data)

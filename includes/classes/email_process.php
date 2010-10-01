@@ -77,12 +77,10 @@ class EmailProcess {
 		$mail->Body=$formating_mail['messages_html'];
 
 		if(!$mail->Send()){ //Teste si le return code est ok.
-			echo "mail error $recipient \n";
 		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
 			return false;
 		}
 		else{	  
-			echo "mail ok $recipient \n";
 		  return true;
 		}
 		$mail->SmtpClose();
