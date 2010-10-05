@@ -34,7 +34,7 @@ class EmailProcess {
 			{
 				if (strpos($this->dico, $item) === false) 
 				{
-					$this->dico.= $item.':::'.$data[$item].';;;';
+					$this->dico.= '$$$'.$item.'$$$'.':::'.$data[$item].';;;';
 				}
 			}
 		}
