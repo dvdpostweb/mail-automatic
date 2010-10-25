@@ -1,6 +1,6 @@
 <?php
 
-class Step31 extends Script{
+class Step31_month extends Script{
 	var $mail;
 	var $data;
 	
