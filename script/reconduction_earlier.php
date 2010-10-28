@@ -22,7 +22,7 @@ class Reconduction_earlier extends Script {
 		      and customers_abo_suspended = 0
 		      and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 17
 		      and (( datediff(c.customers_abo_validityto,hist.d) > 15) or (hist.customers_id is null)) 
-		      and customers_abo_validityto > Date_add(now(), interval 4 day)  limit 1
+		      and customers_abo_validityto > Date_add(now(), interval 4 day)
 		';
 		//and (select sum(credit) from `customers_aboprocess_stats` where customers_id = c.customers_id and aboprocess_id > '.$abo_process_id.' order by id desc) = 0 
     
