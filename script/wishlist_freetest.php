@@ -18,7 +18,7 @@ class Wishlist_Freetest extends Script {
 				and (p.products_status <>-1 or p.products_status is null ) and (p.products_next = 0 or p.products_next is null)
 				and c.customers_abo_dvd_norm > 0 and c.customers_abo_dvd_adult = 0
 				and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 17
-				and (select date > Date_add(now(), interval -3 day) from abo a where a.`action` in (6,8,1 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) =1
+				and (select date < Date_add(now(), interval -3 day) from abo a where a.`action` in (6,8,1 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) =1
 				and qty_credit > 0
 				group by c.customers_id
 				having size < if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,30))';
