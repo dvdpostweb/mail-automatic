@@ -17,7 +17,7 @@ class Reconduction_earlier_payed extends Script {
 		      and customers_registration_step = 100 
 		      and customers_abo_suspended = 0
 		      and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 7
-		      and (( datediff(c.customers_abo_validityto,hist.d) > 15) or (hist.customers_id is null)) 
+		      and (( datediff(now(),hist.d) > 15) or (hist.customers_id is null)) 
 		      and customers_abo_validityto > Date_add(now(), interval 4 day) 
 		';
 		$this->data = tep_db_query($sql_data);
