@@ -7,7 +7,7 @@ class Wishlist_Freetest extends Script {
 	}
 	public function execute()
 	{
-		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,30)) as min_size
+		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,30),30))) as min_size
 				from customers c
 				left join wishlist w on (w.customers_id = c.customers_id)
 				left join products p on p.products_id = w.product_id
@@ -19,9 +19,8 @@ class Wishlist_Freetest extends Script {
 				and c.customers_abo_dvd_norm > 0 and c.customers_abo_dvd_adult = 0
 				and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 17
 				and (select date < Date_add(now(), interval -3 day) from abo a where a.`action` in (6,8,1 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) =1
-				and qty_credit > 0
 				group by c.customers_id
-				having size < if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,30))';
+				having size < if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,30),30)))';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
