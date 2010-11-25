@@ -12,13 +12,14 @@ class Wishlist_Freetest extends Script {
 				left join wishlist w on (w.customers_id = c.customers_id)
 				left join products p on p.products_id = w.product_id
 				left join products_abo pa on c.customers_abo_type = pa.products_id
-
+				left join (select customers_id,max(date) d from mail_messages_sent_history where mail_messages_id = 453 group by customers_id) hist on c.customers_id = hist.customers_id
 				where c.customers_abo = 1 and customers_registration_step = 100 and c.customers_abo_suspended = 0
 				and (w.wishlist_type = "dvd_norm" or w.wishlist_type is null)
 				and (p.products_status <>-1 or p.products_status is null ) and (p.products_next = 0 or p.products_next is null)
 				and c.customers_abo_dvd_norm > 0 and c.customers_abo_dvd_adult = 0
 				and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 17
-				and (select date < Date_add(now(), interval -3 day) from abo a where a.`action` in (6,8,1 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) =1
+				and (select date < Date_add(now(), interval -1 day) from abo a where a.`action` in (6,8,1 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) =1
+				and (( datediff(now(),hist.d) > 3) or (hist.customers_id is null)) 
 				group by c.customers_id
 				having size < if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,30),30)))';
 		$this->data = tep_db_query($sql_data);
