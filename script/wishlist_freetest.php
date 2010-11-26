@@ -7,7 +7,7 @@ class Wishlist_Freetest extends Script {
 	}
 	public function execute()
 	{
-		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,30),30))) as min_size
+		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,30),30))) as min_size, pa.qty_at_home
 				from customers c
 				left join wishlist w on (w.customers_id = c.customers_id)
 				left join products p on p.products_id = w.product_id
