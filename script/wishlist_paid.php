@@ -16,7 +16,7 @@ class Wishlist_paid extends Script {
 
 						where c.customers_abo = 1 and customers_registration_step = 100 and c.customers_abo_suspended = 0
 						and (w.wishlist_type = "dvd_norm" or w.wishlist_type is null)
-						and (p.products_status <>-1 or p.products_status is null ) and (p.products_next = 0 or p.products_next is null)
+						and (p.products_status <>-1 or p.products_status is null ) and (p.products_next = 0 or p.products_next is null) and (p.products_availability <> -1 or p.products_availability is null)
 						and c.customers_abo_dvd_norm > 0 and c.customers_abo_dvd_adult = 0
 						and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 7
 						group by c.customers_id
