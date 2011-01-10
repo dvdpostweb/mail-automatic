@@ -28,6 +28,15 @@ class First_reconduction extends Script {
 			default:
 				$data['payement_type'] = $this->get_key("TEXT_PAYMENT_METHOD_BT_".$data['customers_language']);
 		}
+		if (strtoupper($data['customers_gender'])=='f')
+		{
+			$key='TEXT_FEMALE_GENDER_'.$data['customers_language']; 			
+		}
+		else
+		{
+			$key='TEXT_MALE_GENDER_'.$data['customers_language']; 			
+		}
+		$data['gender_simple'] = $this->get_key($key);
 		return $data;
 	}
 	/*function post_process($data)
