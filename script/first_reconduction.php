@@ -12,7 +12,7 @@ class First_reconduction extends Script {
 		join products p on customers_next_abo_type = p.products_id
 		join products_abo pa on customers_next_abo_type = pa.products_id
 		join customers_abo_payment_method pm on customers_abo_payment_method_id = c.customers_abo_payment_method
-		where datediff(`customers_abo_validityto`,now())=4 and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 17;';
+		where datediff(`customers_abo_validityto`,now())=4 and (select a.`action` from abo a where a.`action` in (7,17 ) and customers_abo_auto_stop_next_reconduction = 0 and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 17;';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
