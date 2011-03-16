@@ -41,7 +41,17 @@ class Indisponible_classic extends Script {
 		$request = 'http://localhost/webservice';
 		$format = 'recommendations_dvd_to_dvd.php';
 		$args='product_id='.$data['products_id'].'&limit=7&customer_id='.$data['customers_id'].'&hide=1';
-		
+		if (strtolower($data['products_media']) =='dvd')
+		{	
+			$data['indispo_title'] = 'titre_indisponible';
+			$data['indispo_jacket'] = 'dvd_indisponible';
+		}
+		else
+		{
+			$data['indispo_title'] = 'titre_indisponiblebluray';
+			$data['indispo_jacket'] = 'blu_ray_indisponible';
+		}
+			
 		$session = curl_init($request.'/'.$format.'?'.$args);
 	  curl_setopt($session, CURLOPT_HEADER, false);
 	  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);

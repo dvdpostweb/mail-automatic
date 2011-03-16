@@ -8,16 +8,16 @@ class Indisponible_vod extends Script {
 	public function execute()
 	{
 		$sql_data="select  products_series_id,customers_gender,p.imdb_id,p.products_id, pd.products_name,concat(c.customers_firstname,' ',c.customers_lastname) as customers_name,c.customers_email_address as customers_email,c.customers_id, customers_language,products_media 
-				, pd.products_image_big as products_image 
-				from customers c
-				 join wishlist w on w.customers_id = c.customers_id
-				 join products p on p.products_id = product_id
-				 join products_description pd on pd.products_id = product_id and language_id = c.customers_language
-				 join streaming_products on streaming_products.`imdb_id`= p.imdb_id and streaming_products.available_from < now() and streaming_products.expire_at > now() and streaming_products.status = 'online_test_ok'  
-				 where products_availability = -2 and c.customers_abo = 1 and products_type = 'DVD_NORM' and products_status !=-1 
-				and not exists (select * from products_dvd pd where pd.products_dvd_status in (1,21,24,25,23) and pd.products_id = p.products_id) 
+						, pd.products_image_big as products_image 
+						from customers c
+						 join wishlist w on w.customers_id = c.customers_id
+						 join products p on p.products_id = product_id
+						 join products_description pd on pd.products_id = product_id and language_id = c.customers_language
+						 join streaming_products on streaming_products.`imdb_id`= p.imdb_id and streaming_products.available_from < now() and streaming_products.expire_at > now() and streaming_products.status = 'online_test_ok'  
+						 where products_availability = -2 and c.customers_abo = 1 and products_type = 'DVD_NORM' and products_status !=-1 
+						and not exists (select * from products_dvd pd where pd.products_dvd_status in (1,21,24,25,23) and pd.products_id = p.products_id)
 
-				group by products_series_id,p.imdb_id,c.customers_id ;";
+						group by products_series_id,p.imdb_id,c.customers_id ;";
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
@@ -47,6 +47,16 @@ class Indisponible_vod extends Script {
 	  curl_close($session);
 		$data['recommendation_dvd_to_dvd']=$response;
 		$data['recommendation_display']= ((trim($response) =='') ? 'style="display:none"' : '' );
+		if (strtolower($data['products_media']) =='dvd')
+		{	
+			$data['indispo_title'] = 'titre_indisponible';
+			$data['indispo_jacket'] = 'dvd_indisponible';
+		}
+		else
+		{
+			$data['indispo_title'] = 'titre_indisponiblebluray';
+			$data['indispo_jacket'] = 'blu_ray_indisponible';
+		}
 		return $data;
 	}
 	function post_process($data)
