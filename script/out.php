@@ -31,7 +31,7 @@ class out extends Script {
 		
 		$request = 'http://www.dvdpost.be/webservice';
 		$format = 'recommendations_dvd_to_dvd.php';
-		$args='product_id='.$data['products_id'].'&limit=7&customer_id='.$data['customers_id'].'&hide=1';
+		$args='product_id='.$data['products_id'].'&limit=7&customer_id='.$data['customers_id'];
 		$session = curl_init($request.'/'.$format.'?'.$args);
 	  curl_setopt($session, CURLOPT_HEADER, false);
 	  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
