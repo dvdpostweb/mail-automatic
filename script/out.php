@@ -7,7 +7,7 @@ class out extends Script {
 	}
 	public function execute()
 	{
-		$sql_data='select c.*,p.products_id products_id,osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
+		$sql_data='select c.customers_email_address as customers_email, c.*,p.products_id products_id,osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
 		         join orders o on osh.orders_id = o.orders_id 
 		         join customers c on o.customers_id = c.customers_id 
 		         join orders_products op on op.orders_id = o.orders_id 
@@ -65,10 +65,12 @@ class out extends Script {
 	
 		return $data;
 	}
-	/*function post_process($data)
+	function post_process($data)
 	{
-		return true;
-	}*/
+		$sql_up ='update orders_status_history set customer_notified  = 1 where orders_id =  '. $data['orders_id'];
+		$status = tep_db_query($sql_up);
+		return $status;
+	}
 
 }
 ?>
