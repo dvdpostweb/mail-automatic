@@ -18,7 +18,7 @@ class out extends Script {
 	}
 	function add_data_row($data)
 	{
-		if (strtoupper($data['customers_gender'])=='f')
+		if (strtoupper($data['customers_gender'])=='F')
 		{
 			$key='TEXT_FEMALE_GENDER_'.$data['customers_language']; 			
 		}

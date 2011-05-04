@@ -13,7 +13,7 @@ class Unsuspension extends Script {
 	function add_data_row($data)
 	{
 		$data['suspension_duration'] = $this->distance_of_time_in_words(strtotime($data["suspension_start_diff"]),strtotime($data["suspension_end_diff"]),$data);
-		if (strtoupper($data['customers_gender'])=='f')
+		if (strtoupper($data['customers_gender'])=='F')
 		{
 			$key='TEXT_FEMALE_GENDER_'.$data['customers_language']; 			
 		}
