@@ -25,6 +25,9 @@ class Schedule {
 		$this->parse_args($argv);
 		tep_db_connect($this->db_config[$this->ENV]['host'], $this->db_config[$this->ENV]['user'] ,$this->db_config[$this->ENV]['password'], $this->db_config[$this->ENV]['database']);
 		$this->email_process = new EmailProcess();
+		$this->message = new MessageProcess();
+		$this->customer = new CustomerProcess();
+		
 		$this->fp = fopen('error.log', 'a+');
 	}
 	function error($message,$script)
@@ -106,18 +109,41 @@ class Schedule {
 	function client_process($script_row,$mail_id,$row,$script)
 	{
 		tep_begin();
+		$mail_copy = $this->customer->mail_copy;
 		$script_row = $script->add_data_row($script_row);
+		$language = $script_row['customers_language'];
+		$force_copy = $this->mail[$language]['force_copy'];
+		
 		if($script_row !== false)
 		{
-			$status_history = $this->email_process->history($mail_id,$script_row);
-			if($status_history !=false)
+			if($mail_copy==1 || $force_copy==1)
+				$status_history = $this->email_process->history($mail_id,$script_row);
+			else
+				$status_history=0;
+			if($status_history !==false)
 			{
 				$script_row['mail_messages_sent_history_id']=$status_history;
 				$formating_mail = $this->email_process->formating($this->mail,$script_row);
-				$this->email_process->set_dico($status_history);
+				
+				if ($status_history !=0){
+					$this->email_process->set_dico($status_history);
+				}
 				if($formating_mail !== false) 
 				{
-					$mail_sent = $this->email_process->send($formating_mail,$script_row,$this->ENV);
+					if($mail_copy==1 || $force_copy==1)
+					{
+						$mail_sent = $this->email_process->send($formating_mail,$script_row,$this->ENV);
+						$script_row['mail_messages_sent_history_id']=0;
+						$formating_mail = $this->email_process->formating($this->mail,$script_row);
+						$this->message->send($script_row['customers_id'], $this->mail[$language]['category_id'], $this->email_process->get_dico(), $mail_id , $status_history);
+					}
+					else
+					{
+						$mail_sent=true;
+						$script_row['mail_messages_sent_history_id']=0;
+						$formating_mail = $this->email_process->formating($this->mail,$script_row);
+						$this->message->send($script_row['customers_id'], $this->mail[$language]['category_id'], $this->email_process->get_dico(), $mail_id);
+					}
 					if($mail_sent == 1)
 					{
 						$status = $script->post_process($script_row);
