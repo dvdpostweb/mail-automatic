@@ -218,6 +218,8 @@ class out_new extends Script {
 			$listing_sql .= ' left join dvdpost_be_prod.products_uninterested  pu on pu.products_id=p.products_id and pu.customers_id=\'' . $data['customers_id'] . '\' ';
 			$listing_sql .= ' where p.products_id in ('.$list.')';
 			$listing_sql .= 'and w.product_id is null and wa.products_id is null and pu.products_id is null and (products_quantity > 0 or products_next =1)';
+			$listing_sql .= ' and (select count(*) from products_to_categories where categories_id =76 and products_id = p.products_id) = 0';
+			
 			switch ($customer_value['customers_language']){
 				case 1:
 					$listing_sql.= ' and p.products_language_fr >0 ';
