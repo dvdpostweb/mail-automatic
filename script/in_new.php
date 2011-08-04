@@ -14,6 +14,11 @@ class in_new extends Script {
 		         join products p on op.products_id = p.products_id 
 		         join products_description pd on p.products_id = pd.products_id and pd.language_id = c.customers_language 
 		         where osh.new_value = 3 and osh.customer_notified= 0';
+						$sql_data='select concat(customers_firstname," ",customers_lastname) customers_name, c.customers_email_address as customers_email,c.*,p.products_id products_id,"2011-06-08" date,pd.products_image_big products_image,pd.products_name,p.*  
+						from customers c    
+						join products p on 199 = p.products_id 
+						join products_description pd on p.products_id = pd.products_id and pd.language_id = c.customers_language 
+						where c.customers_id=	206183';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
@@ -66,9 +71,18 @@ class in_new extends Script {
 		{
 			$data['url_kind'] = 'adult/';
 			$data['images_path'] = 'imagesx';
-			$data['director_id']= $product['studio_id'];
-			$data['director_type']= "studios";
-			$data['director_name']= $product['studio_name'];
+			if($data['studio_id']>0)
+			{
+				$data['director_id']= $product['studio_id'];
+				$data['director_type']= "studios";
+				$data['director_name']= $product['studio_name'];
+			}
+			else
+			{
+				$data['director_id']= 0;
+				$data['director_type']= "studios";
+				$data['director_name']= '';
+			}
 			$adult='true';
 			
 		}
@@ -76,9 +90,18 @@ class in_new extends Script {
 		{
 			$data['url_kind'] = '';
 			$data['images_path'] = 'images';
+			if($data['director_id']>0)
+			{
 			$data['director_id']= $product['directors_id'];
 			$data['director_type']= "directors";
 			$data['director_name']= $product['directors_name'];
+			}
+			else
+			{
+				$data['director_id']= 0;
+				$data['director_type']= "directors";
+				$data['director_name']= '';
+			}
 			$adult='false';
 			
 		}

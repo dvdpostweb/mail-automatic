@@ -66,9 +66,18 @@ class out_new extends Script {
 		{
 			$data['url_kind'] = 'adult/';
 			$data['images_path'] = 'imagesx';
-			$data['director_id']= $product['studio_id'];
-			$data['director_type']= "studios";
-			$data['director_name']= $product['studio_name'];
+			if($data['studio_id']>0)
+			{
+				$data['director_id']= $product['studio_id'];
+				$data['director_type']= "studios";
+				$data['director_name']= $product['studio_name'];
+			}
+			else
+			{
+				$data['director_id']= 0;
+				$data['director_type']= "studios";
+				$data['director_name']= '';
+			}
 			$adult='true';
 			
 		}
@@ -76,9 +85,18 @@ class out_new extends Script {
 		{
 			$data['url_kind'] = '';
 			$data['images_path'] = 'images';
-			$data['director_id']= $product['directors_id'];
-			$data['director_type']= "directors";
-			$data['director_name']= $product['directors_name'];
+			if($data['director_id']>0)
+			{
+				$data['director_id']= $product['directors_id'];
+				$data['director_type']= "directors";
+				$data['director_name']= $product['directors_name'];
+			}
+			else
+			{
+				$data['director_id']= 0;
+				$data['director_type']= "directors";
+				$data['director_name']= '';
+			}
 			$adult='false';
 			
 		}
