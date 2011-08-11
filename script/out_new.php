@@ -60,7 +60,14 @@ class out_new extends Script {
 		}
 		$actors_links = substr($actors_links,0,-2);
 		
-		
+		if($data['products_media'] == 'dvd')
+		{
+			$data['media']='dvd';
+		}
+		else
+		{
+			$data['media']='bluray';
+		}
 		$data['product_id']= $data['products_id'];
 		if($data['products_type']=='DVD_ADULT')
 		{
