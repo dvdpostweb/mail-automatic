@@ -60,13 +60,13 @@ class in_new extends Script {
 		}
 		$actors_links = substr($actors_links,0,-2);
 		
-		if($data['products_media'] == 'dvd')
+		if($data['products_media'] == 'BlueRay')
 		{
-			$data['media']='dvd';
+			$data['media']='bluray';
 		}
 		else
 		{
-			$data['media']='bluray';
+			$data['media']='dvd';
 		}
 		$data['product_id']= $data['products_id'];
 		if($data['products_type']=='DVD_ADULT')
