@@ -12,7 +12,7 @@ class not_read extends Script {
 		join customers c on customers_id = customer_id
 		join dvdpost_be_prod.message_tickets mt on ticket_id = t.`id`
 		join mail_messages mm on mt.mail_id = mm.mail_messages_id
-		where  datediff(now(), mt.created_at)>=7 and user_id > 0 and is_read =0  and reminder = 1 and customers_abo = 1 group by c.customers_id';
+		where  datediff(now(), mt.created_at)>=7 and user_id > 0 and is_read =0  and reminder = 1 and customers_abo = 1 and sleep=0 group by c.customers_id';
 		$this->data = tep_db_query($sql_data);
 	}
 	/*function add_data_row($data)
