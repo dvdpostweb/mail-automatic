@@ -92,7 +92,7 @@ class in_new extends Script {
 		{
 			$data['url_kind'] = '';
 			$data['images_path'] = 'images';
-			if($data['director_id']>0)
+			if($data['directors_id']>0)
 			{
 			$data['director_id']= $product['directors_id'];
 			$data['director_type']= "directors";
