@@ -9,7 +9,6 @@ include("./includes/classes/class.phpmailer.php");
 include('./includes/classes/mime.php');
 include('./includes/classes/script.php');
 include('./config/database.inc.php');
-
 $main = new Schedule($db_config, $argv);
 $main->execute();
 ?>
