@@ -1,19 +1,18 @@
 <?php
 
-class in_new extends Script {
+class vod_expire extends Script {
 	var $data;
 	function __construct() {
 		parent::__construct();
 	}
 	public function execute()
 	{
-		$sql_data='select c.customers_email_address as customers_email, c.*,p.products_id products_id,osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
-		         join orders o on osh.orders_id = o.orders_id 
-		         join customers c on o.customers_id = c.customers_id 
-		         join orders_products op on op.orders_id = o.orders_id 
-		         join products p on op.products_id = p.products_id 
-		         join products_description pd on p.products_id = pd.products_id and pd.language_id = c.customers_language 
-		         where osh.new_value = 3 and osh.customer_notified= 0';
+		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name
+		 from vod_wishlists v
+					join streaming_products sp on sp.imdb_id = v.imdb_id
+					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
+					where expire_at = date(date_add(now(), interval 15 day)) and available =1 and status = "online_test_ok" and available_from < now()
+					group by v.imdb_id;';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
@@ -40,7 +39,10 @@ class in_new extends Script {
 			$lang_short = 'en';
 		}
 		
-
+		$sql_p = 'select * from products where products_status !=-1 and imdb_id = '.$data['imdb_id']. ' limit 1';
+		$query_p = tep_db_query($sql_p);
+		$p = tep_db_fetch_array($query_p);
+		$data['products_id'] = $p['products_id'];
 		$sql_product = 'select * from products p 
 		join products_description pd on p.products_id = pd.products_id 
 		left join directors d on products_directors_id = directors_id
@@ -107,12 +109,12 @@ class in_new extends Script {
 			$adult='false';
 			
 		}
+		$data['date']= 'test';
 		$data['list_actors']= $actors_links;
 		$data['product_image']= $product['products_image_big'];
 		$data['product_description']= $this->truncate($product['products_description'],1000);
 		$data['product_year']= $product['products_year'];
 		$data['product_title']= $product['products_name'];
-		
 		$rating_product =  $product['rating_count'] > 0 ? round(($product['rating_users'] / $product['rating_count']) * 2) : 0 ;
 		for($i = 0 ; $i < 5 ; $i++)
 		{
@@ -198,135 +200,12 @@ class in_new extends Script {
 			
 			$i++;
 		}
-
-		$request =  'http://partners.thefilter.com/DVDPostService';
-		$format = 'RecommendationService.ashx';   // this can be xml, json, html, or php
-		$args =  'cmd=DVDRecommendDVDs';
-		$args .= '&id='.$data['products_id'];
-		$args .= '&number=100';
-		$args .= '&includeAdult='.$adult.'&verbose=false&clientIp='.$_SERVER['REMOTE_ADDR'];
-	
-	    // Get and config the curl session object
-	    // 
-	    // 
-		
-		#echo $request.'/'.$format.'?'.$args;
-	    $session = curl_init($request.'/'.$format.'?'.$args);
-	    curl_setopt($session, CURLOPT_HEADER, false);
-	    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-		    //execute the request and close
-	    $response = curl_exec($session);
-	    curl_close($session);
-	    // this line works because we requested $format='php' and not some other output format
-	    // this is your data returned; you could do something more useful here than just echo it
-	    try {
-		  $recommend = new SimpleXMLElement($response);
-		} catch (Exception $e) {
-		  echo "bad xml";
-		}
-		$i=0;
-		$list='';
-		foreach ($recommend->children()->children() as $dvd) {
-		
-			if($i==0)
-				$list=$dvd['Id'];
-			else
-				$list.=','.$dvd['Id'];
-			$i++;
-		}
-		  if(empty($list))
-			$list=0;
-			$listing_sql = 'select p.rating_users,p.rating_count,p.products_id, pd.products_name , pd.products_image_big,p.products_media,products_type  from  dvdpost_be_prod.products p ';
-			$listing_sql .= ' left join dvdpost_be_prod.products_description pd on p.products_id = pd.products_id and pd.language_id=' . $data['customers_language'] ;
-			$listing_sql .= ' left join dvdpost_be_prod.wishlist w on w.product_id=p.products_id and w.customers_id=\'' . $data['customers_id'] . '\'' ;
-			$listing_sql .= ' left join dvdpost_be_prod.wishlist_assigned wa on wa.products_id=p.products_id and wa.customers_id=\'' . $data['customers_id'] . '\' ';
-			$listing_sql .= ' left join dvdpost_be_prod.products_uninterested  pu on pu.products_id=p.products_id and pu.customers_id=\'' . $data['customers_id'] . '\' ';
-			$listing_sql .= ' where p.products_id in ('.$list.')';
-			$listing_sql .= ' and w.product_id is null and wa.products_id is null and pu.products_id is null and (products_quantity > 0 or products_next =1) and products_media !="vod"';
-			$listing_sql .= ' and (select count(*) from products_to_categories where categories_id =76 and products_id = p.products_id) = 0';
-			switch ($customer_value['customers_language']){
-				case 1:
-					$listing_sql.= ' and p.products_language_fr >0 ';
-					$lang_short='fr';
-				break;
-				case 2:
-					$listing_sql.= ' and p.products_undertitle_nl >0 ';
-					$lang_short='nl';
-				break;
-				case 3:
-					$lang_short='en';
-				break;
-				}
-			$listing_recom_sql = $listing_sql . ' order by rand() limit 7';
-			$recom_query = tep_db_query($listing_recom_sql);
-		
-		$nb=tep_db_num_rows($recom_query);
-		if($nb==0)
-		{
-			$data['recom_visible'] = 'none';
-		}
-		else
-		{
-			$data['recom_visible'] = 'block';
-		}
-		if ($nb < 7 )
-		{
-			$start = ($nb+1);
-			for($i=$start;$i<=7;$i++)
-			{
-			$data['recom_title_'.$i] = '';
-			$data['recom_id_'.$i] = '';
-			$data['recom_image_'.$i] = '';
-			$data['recom_visible_'.$i]='none';
-			$data['recom_kind_'.$i] = 'dvd';
-			$rating_product =  0 ;
-			for($j = 0 ; $j < 5 ; $j++)
-			{
-				$type='off';
-				$data['recom_rating_star_'.$i.'_'.($j+1)] = $type;
-			}
-			}
-		}
-		$i=1;
-		while ($recom = tep_db_fetch_array($recom_query)) {
-			$data['recom_title_'.$i] = $recom['products_name'];
-			$data['recom_id_'.$i] = $recom['products_id'];
-			$data['recom_image_'.$i] = $recom['products_image_big'];
-			$data['recom_visible_'.$i]='';
-			$data['recom_kind_'.$i] = $data['products_type'] == 'blueray'? 'bluray': 'dvd';
-			
-			
-			$rating_product =  $recom['rating_count'] > 0 ? round(($recom['rating_users'] / $recom['rating_count']) * 2) : 0 ;
-			for($j = 0 ; $j < 5 ; $j++)
-			{
-				if($rating_product>=2)
-				{
-					$type='on';
-				}
-				elseif($rating_product==1)
-				{
-					$type='half';
-				}
-				else
-				{
-					$type='off';
-				}
-				$rating_product -= 2;
-				$data['recom_rating_star_'.$i.'_'.($j+1)] = $type;
-			}
-			$i++;
-		}
-		
-	
 		return $data;
 	}
-	function post_process($data)
+	/*function post_process($data)
 	{
-		$sql_up ='update orders_status_history set customer_notified  = 1 where orders_id =  '. $data['orders_id'];
-		$status = tep_db_query($sql_up);
-		return $status;
-	}
-	
+		return true;
+	}*/
 	function truncate($text,$numb,$etc = "...") 
 	{
 		$text = html_entity_decode($text, ENT_QUOTES);
@@ -347,6 +226,6 @@ class in_new extends Script {
 		}
 		return $text;
 	}
-
 }
+
 ?>

@@ -92,7 +92,7 @@ class out_new extends Script {
 		{
 			$data['url_kind'] = '';
 			$data['images_path'] = 'images';
-			if($data['directors_id']>0)
+			if($product['directors_id']>0)
 			{
 				$data['director_id']= $product['directors_id'];
 				$data['director_type']= "directors";
@@ -113,7 +113,7 @@ class out_new extends Script {
 		$data['product_year']= $product['products_year'];
 		$data['product_title']= $product['products_name'];
 		
-		$rating_product =  $product['rating_count'] > 0 ? round(($data['rating_users'] / $data['rating_count']) * 2) : 0 ;
+		$rating_product =  $product['rating_count'] > 0 ? round(($product['rating_users'] / $product['rating_count']) * 2) : 0 ;
 		for($i = 0 ; $i < 5 ; $i++)
 		{
 			if($rating_product>=2)
