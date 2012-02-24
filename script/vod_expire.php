@@ -7,7 +7,7 @@ class vod_expire extends Script {
 	}
 	public function execute()
 	{
-		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name
+		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name, date_format(date_add(now(), interval 15 day), "%d/%m/%Y") vod_expiration_date
 		 from vod_wishlists v
 					join streaming_products sp on sp.imdb_id = v.imdb_id
 					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
