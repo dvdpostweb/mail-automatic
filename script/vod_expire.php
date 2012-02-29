@@ -23,7 +23,7 @@ class vod_expire extends Script {
 		}
 		else
 		{
-			$key='TEXT_MALE_GENDER_'.$data['customers_language']; 			
+			$key='TEXT_MALE_GENDER_'.$data['customers_language'];
 		}
 		$data['gender_simple'] = $this->get_key($key);
 		if($data['customers_language']==1)

@@ -28,12 +28,11 @@ class Schedule {
 		$this->message = new MessageProcess();
 		$this->customer = new CustomerProcess();
 		
-		$this->fp = fopen('error.log', 'a+');
+		$this->fp = fopen('./log/error.log', 'a+');
 	}
 	function error($message,$script)
 	{
 		$date = date('d/m/Y H:i:s');
-	
 		fwrite($this->fp, $date.': script_id :'.$script.' '.$message."\n");
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
