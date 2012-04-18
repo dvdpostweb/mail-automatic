@@ -12,7 +12,7 @@ class vod_new extends Script {
 					join streaming_products sp on sp.imdb_id = v.imdb_id
 					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
 					where expire_at > now() and available = 1 and status = "online_test_ok" and available_from = date(now())
-					group by v.imdb_id;';
+					group by v.imdb_id, c.customers_id;';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
