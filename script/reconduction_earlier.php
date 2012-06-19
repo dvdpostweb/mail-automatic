@@ -5,7 +5,7 @@ class Reconduction_earlier extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		
 		/*$abo = tep_db_query('select * from aboprocess_stats order by aboprocess_id desc limit 1');

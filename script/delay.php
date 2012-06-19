@@ -9,7 +9,7 @@ class Delay extends Script {
 	function __construct() {
 		$this->email_process = new EmailProcess();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 			$sql_data='SELECT o.orders_id ,o.customers_name as name,o.customers_name, date_format(o.date_purchased,"%d/%m/%Y") as date ,o.customers_email_address as mail,o.customers_email_address as customers_email, c.customers_language , o.customers_id, p.products_name,o.customers_country, CONCAT(p.products_name," [",p.products_id," - ",products_dvd,"]") as title, concat(o.customers_street_address," ",o.customers_postcode," ",o.customers_city) as address
 										FROM orders o

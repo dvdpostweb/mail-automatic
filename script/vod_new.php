@@ -5,7 +5,7 @@ class vod_new extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name
 					from vod_wishlists v

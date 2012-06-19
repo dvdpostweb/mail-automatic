@@ -4,7 +4,7 @@ class Survey extends Script {
 	var $data;
 	function __construct() {
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='SELECT cas.id,c.customers_id, customers_language ,entry_country_id,customers_email_address as  customers_email FROM customers_abo_stop cas
 			 join customers c on cas.customers_id = c.customers_id 

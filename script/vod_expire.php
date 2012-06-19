@@ -5,7 +5,7 @@ class vod_expire extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name, date_format(date_add(now(), interval 15 day), "%d/%m/%Y") vod_expiration_date
 		 from vod_wishlists v

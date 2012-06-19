@@ -68,7 +68,7 @@ class Schedule {
 					$depart=$this->timer();
 					$script = new $class_name();
 					
-					$script->execute();
+					$script->execute($mail_id);
 					
 					if($script->get_data() !== false)
 					{

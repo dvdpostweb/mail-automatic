@@ -5,7 +5,7 @@ class Unsuspension extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='select customer_id as customers_id, concat(customers_firstname," ",customers_lastname) customers_name,customers_email_address,customers_gender, date_format(date_added,"%d/%m/%Y") suspension_start, date_format(date_added,"%Y-%m-%d") suspension_start_diff,datediff(s.date_end,date_added) diff,date_format(date_end,"%Y-%m-%d") suspension_end_diff,date_format(date_end,"%d/%m/%Y") suspension_end, if (date_end < customers_abo_validityto, date_format(customers_abo_validityto,"%d/%m/%Y"), date_format(date_end,"%d/%m/%Y")) next_reconduction_date,customers_language, customers_email_address as customers_email  from suspensions s join customers c on c.customers_id = s.customer_id where status = "holidays" and date(adddate(date_end,-7)) = date(now()) and customers_abo = 1 and customers_abo_suspended =1 having diff >7';
 		$this->data = tep_db_query($sql_data);

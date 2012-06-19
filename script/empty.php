@@ -5,7 +5,7 @@ class EMPTY extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='';
 		$this->data = tep_db_query($sql_data);

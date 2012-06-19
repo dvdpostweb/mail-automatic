@@ -5,7 +5,7 @@ class Indisponible_vod extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data="select  products_series_id,customers_gender,p.imdb_id,p.products_id, pd.products_name,concat(c.customers_firstname,' ',c.customers_lastname) as customers_name,c.customers_email_address as customers_email,c.customers_id, customers_language,products_media 
 						, pd.products_image_big as products_image 

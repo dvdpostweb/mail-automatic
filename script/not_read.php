@@ -5,7 +5,7 @@ class not_read extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language
 		from dvdpost_be_prod.tickets t

@@ -2,7 +2,6 @@
 $links=array();
   function tep_db_connect($server = DB_SERVER, $username = DB_SERVER_USERNAME, $password = DB_SERVER_PASSWORD, $database = DB_DATABASE, $link = 'db_link') {
     global $links, $$link;
-
 	$db_link = mysql_connect($server, $username, $password);
     if ($db_link){
 		mysql_select_db($database);

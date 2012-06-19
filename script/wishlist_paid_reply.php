@@ -5,7 +5,7 @@ class Wishlist_paid_reply extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,c.customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30))) as min_size,pa.qty_at_home
 						from customers c

@@ -33,7 +33,7 @@ class Step31 extends Script{
 		$this->count_bluray =$this->get_count_movies('bluray');
 		$this->count_customer =$this->get_count_customers();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='(SELECT c.customers_id,c.customers_id as id, customers_language ,entityid ,customers_email_address,customers_email_address as customers_email,discount_code as promotion,discount_type as abo_type, discount_value as abo_value, discount_abo_validityto_type as type,discount_abo_validityto_value as value,abo_dvd_credit  ,pa.qty_credit
 				 FROM customers c

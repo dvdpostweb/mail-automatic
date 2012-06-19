@@ -5,7 +5,7 @@ class First_reconduction extends Script {
 	function __construct() {
 		parent::__construct();
 	}
-	public function execute()
+	public function execute($mail_id)
 	{
 		$sql_data='select customers_id, concat(customers_firstname," ",customers_lastname) customers_name,  date_format(customers_abo_validityto,"%d/%m/%Y") next_reconduction_date,customers_language, customers_email_address as customers_email, (select date_format(date,"%d/%m/%Y") from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id and action = 17 order by a.abo_id desc limit 1) subscription_start,  p.products_price formula_price, qty_credit formula_quantity,customers_abo_payment_method_name payement_type_db
 		from customers c
