@@ -24,14 +24,16 @@ class Step31 extends Script{
 	
 	var $count_movies;
 	var $count_bluray;
+	var $count_vod;
 	var $count_customer;
 	
 	
 	function __construct() {
 		parent::__construct();
 		$this->count_movies = $this->get_count_movies('all');
-		$this->count_bluray =$this->get_count_movies('bluray');
-		$this->count_customer =$this->get_count_customers();
+		$this->count_bluray = $this->get_count_movies('bluray');
+		$this->count_vod = $this->get_count_vod();
+		$this->count_customer = $this->get_count_customers();
 	}
 	public function execute($mail_id)
 	{
@@ -46,7 +48,6 @@ class Step31 extends Script{
 				 JOIN activation_code dc ON c.`activation_discount_code_id` = dc.activation_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
 				 where date(now()) = date(DATE_ADD( customers_info_date_account_created, INTERVAL 3 DAY )) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.' or customers_registration_step='.self::STEP33.') AND `activation_discount_code_type` = "a"  and dc.activation_group!=152 )';				
-			
 		$this->data = tep_db_query($sql_data);
 	}
 
@@ -98,8 +99,20 @@ class Step31 extends Script{
 		$data['site_link']='http://'.$host;
 		$data['count_movies']=$this->count_movies[$language];
 		$data['count_bluray']=$this->count_bluray[$language];
+		$data['vod_count']=$this->count_vod[$language];
 		$data['count_customers']=$this->count_customer[$language];
 		return $data;
+	}
+	function get_count_vod()
+	{
+		$sql="select count(distinct imdb_id) cpt from streaming_products where available = 1";
+		$count_dvd_query=tep_db_query($sql);
+		$row=tep_db_fetch_array($count_dvd_query);
+		$cpt_catalog=ceil($row['cpt']/1000)*1000;
+		$count[1] = number_format($cpt_catalog, 0, '.', ' ');
+		$count[2] = number_format($cpt_catalog, 0, '.', '.');
+		$count[3] = number_format($cpt_catalog, 0, '.', ',');
+		return $count;
 	}
 	function get_count_movies($type='all')
 	{

@@ -20,7 +20,7 @@ class Wishlist_paid_reply extends Script {
 						and c.customers_abo_dvd_norm > 0 and c.customers_abo_dvd_adult = 0
 						and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 7
 						and qty_credit > 0
-						and (( datediff(now(),hist.d) > 3) or (hist.customer_id is null)) and sleep = 0
+						and (( datediff(now(),hist.d) > 3) or (hist.customer_id is null)) and sleep = 0 and pa.qty_credit !=10000
 						group by c.customers_id
 						having size < if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30)));';
 		$this->data = tep_db_query($sql_data);
