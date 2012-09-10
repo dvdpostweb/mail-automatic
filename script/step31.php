@@ -41,13 +41,13 @@ class Step31 extends Script{
 				 FROM customers c
 				 JOIN discount_code dc ON c.`activation_discount_code_id` = dc.discount_code_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
-				 where date(now()) = date(DATE_ADD( customers_info_date_account_created, INTERVAL 3 DAY )) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.' or customers_registration_step='.self::STEP33.') AND `activation_discount_code_type` = "d" and dc.group_id !=152
+				 where date(now()) = date(DATE_ADD( customers_info_date_account_created, INTERVAL 1 DAY )) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.' or customers_registration_step='.self::STEP33.') AND `activation_discount_code_type` = "d" and dc.group_id !=152
 							)union(
 				SELECT c.customers_id,c.customers_id as id, customers_language,entityid, customers_email_address,customers_email_address as customers_email,activation_code as promotion,1 as abo_type, 0 as abo_value, validity_type as type,validity_value as value,abo_dvd_credit ,pa.qty_credit
 				 FROM customers c
 				 JOIN activation_code dc ON c.`activation_discount_code_id` = dc.activation_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
-				 where date(now()) = date(DATE_ADD( customers_info_date_account_created, INTERVAL 3 DAY )) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.' or customers_registration_step='.self::STEP33.') AND `activation_discount_code_type` = "a"  and dc.activation_group!=152 )';				
+				 where date(now()) = date(DATE_ADD( customers_info_date_account_created, INTERVAL 1 DAY )) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.' or customers_registration_step='.self::STEP33.') AND `activation_discount_code_type` = "a"  and dc.activation_group!=152 )';				
 		$this->data = tep_db_query($sql_data);
 	}
 
