@@ -134,14 +134,20 @@ class Schedule {
 						$mail_sent = $this->email_process->send($formating_mail,$script_row,$this->ENV);
 						$script_row['mail_messages_sent_history_id']=0;
 						$formating_mail = $this->email_process->formating($this->mail,$script_row);
-						$this->message->send($script_row['customers_id'], $this->mail[$language]['category_id'], $this->email_process->get_dico(), $mail_id , $status_history);
+						if($script_row['customers_id'] > 0)
+						{
+						  $this->message->send($script_row['customers_id'], $this->mail[$language]['category_id'], $this->email_process->get_dico(), $mail_id , $status_history);  
+						}
 					}
 					else
 					{
 						$mail_sent=true;
 						$script_row['mail_messages_sent_history_id']=0;
 						$formating_mail = $this->email_process->formating($this->mail,$script_row);
-						$this->message->send($script_row['customers_id'], $this->mail[$language]['category_id'], $this->email_process->get_dico(), $mail_id);
+						if($script_row['customers_id'] > 0)
+						{
+						  $this->message->send($script_row['customers_id'], $this->mail[$language]['category_id'], $this->email_process->get_dico(), $mail_id);
+					  }
 					}
 					if($mail_sent == 1)
 					{
