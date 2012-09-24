@@ -10,7 +10,8 @@ class newsletter_2movie extends Script {
 		$sql_data='select count(*)nb,email customers_email,0 as customers_id,language_id customers_language, group_concat(product_id) products_id from `public_newsletters` n
     left join public_newsletter_products p on n.id = p.public_newsletter_id
     join products pr on pr.products_id = p.product_id
-    where products_type= "dvd_norm" and products_status !=-1 and product_id is not null and n.created_at between date(DATE_ADD( now(), INTERVAL -1 DAY )) and date(now()) group by n.id having nb=2';
+    left join `customers` c on c.customers_email_address = n.email
+    where c.customers_id is null and products_type= "dvd_norm" and products_status !=-1 and product_id is not null and n.created_at between date(DATE_ADD( now(), INTERVAL -1 DAY )) and date(now()) group by n.id having nb=2';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
