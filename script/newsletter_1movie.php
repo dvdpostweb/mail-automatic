@@ -11,7 +11,7 @@ class newsletter_1movie extends Script {
     left join public_newsletter_products p on n.id = p.public_newsletter_id
     join products pr on pr.products_id = p.product_id
     left join `customers` c on c.customers_email_address = n.email
-    where products_type= "dvd_norm" and products_status !=-1 and product_id is not null and n.created_at between date(DATE_ADD( now(), INTERVAL -1 DAY )) and date(now()) group by n.id having nb=1';
+    where c.customers_id is null and products_type= "dvd_norm" and products_status !=-1 and product_id is not null and n.created_at between date(DATE_ADD( now(), INTERVAL -1 DAY )) and date(now()) group by n.id having nb=1';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
