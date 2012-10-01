@@ -172,7 +172,11 @@ class Schedule {
 				}
 				else
 				{
-					$this->error("variable manquante : ".$this->email_process->get_key_missing().' data '. implode(",", $script_row),$row['id']);
+				  $data_srt = '';
+				  foreach ($script_row as $k => $v) {
+				    $data_srt .=   $k."=>".$v. '<br />';
+          }
+					$this->error("variable manquante : ".$this->email_process->get_key_missing().' data '. $data_srt,$row['id']);
 				}
 			}
 			else

@@ -31,10 +31,10 @@ class newsletter_1movie extends Script {
               left join streaming_products on streaming_products.imdb_id = p.imdb_id
           	  where p.products_id = ".$a." and ((streaming_products.status = 'online_test_ok' and ((streaming_products.available_from <= date(now()) and streaming_products.expire_at >= date(now())) or (streaming_products.available_backcatalogue_from <= date(now()) and streaming_products.expire_backcatalogue_at >= date(now()))) and available = 1) or (p.vod_next=1 or streaming_products.imdb_id is null))
                  group by p.products_id;";
-       echo $sql_subdata;
+       #echo $sql_subdata;
        $data_sub = tep_db_query($sql_subdata);
        $row = tep_db_fetch_array($data_sub);
-       var_dump($row);
+       #var_dump($row);
        $i++;
        $data['product_id'.$i]= $row['products_id'];
        $data['image'.$i]= $row['products_image_big'];
