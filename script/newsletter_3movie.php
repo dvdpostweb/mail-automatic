@@ -25,33 +25,33 @@ class newsletter_3movie extends Script {
 	  }
 	  while ($i < $count) {
        $a = $products[$i];
-       $sql_subdata= "select ifnull(cast(cast((cast((rating_users/rating_count)*2 AS SIGNED)/2) as decimal(2,1))*10 AS SIGNED),0) rating,p.products_id, products_name,categories_name, products_year,countries_name, directors_name,directors_id,products_description,pt.trailers_id,products_image_big, streaming_products.id streaming_products_id
+       $sql_subdata= "select ifnull(cast(cast((cast((rating_users/rating_count)*2 AS SIGNED)/2) as decimal(2,1))*10 AS SIGNED),0) rating,p.products_id, products_name,categories_name, products_year,countries_name, directors_name,directors_id,products_description,pt.trailers_id,products_image_big,if((streaming_products.status = 'online_test_ok' and ((streaming_products.available_from <= date(now()) and streaming_products.expire_at >= date(now())) or (streaming_products.available_backcatalogue_from <= date(now()) and streaming_products.expire_backcatalogue_at >= date(now()))) and available = 1),1,0) streaming_available
               from products p
               join products_description pd on p.products_id = pd.products_id and pd.language_id = ".$data['customers_language']."
-              join products_to_categories pa on p.products_id = pa.products_id
-              join `categories_description` c on c.categories_id = pa.categories_id and c.language_id = ".$data['customers_language']."
+              left join products_to_categories pa on p.products_id = pa.products_id
+              left join `categories_description` c on c.categories_id = pa.categories_id and c.language_id = ".$data['customers_language']."
               left join products_countries on products_countries_id = countries_id
               left join directors on products_directors_id = directors_id
               left join products_trailers pt on p.products_id = pt.products_id and pt.language_id=".$data['customers_language']."
               left join streaming_products on streaming_products.imdb_id = p.imdb_id
-          	  where p.products_id = ".$a." and ((streaming_products.status = 'online_test_ok' and ((streaming_products.available_from <= date(now()) and streaming_products.expire_at >= date(now())) or (streaming_products.available_backcatalogue_from <= date(now()) and streaming_products.expire_backcatalogue_at >= date(now()))) and available = 1) or (p.vod_next=1 or streaming_products.imdb_id is null))
+          	  where p.products_id = ".$a."
                  group by p.products_id;";
-       echo $sql_subdata;
+       #echo $sql_subdata;
        $data_sub = tep_db_query($sql_subdata);
        $row = tep_db_fetch_array($data_sub);
        #var_dump($row);
        $i++;
        $data['product_id'.$i]= $row['products_id'];
-       echo $data['product_id'.$i];
+       #echo $data['product_id'.$i];
        $data['image'.$i]= $row['products_image_big'];
        $data['director_id'.$i]= $row['directors_id'];
        $data['director_name'.$i]= $row['directors_name'];
        $data['title'.$i] = $row['products_name'];
-       $data['category'.$i] = $row['categories_name'];
+       $data['category'.$i] = !empty($row['categories_name']) ? $row['categories_name'] : '';
        $data['year'.$i] = $row['products_year'];
        $data['country'.$i] = $row['countries_name'];
        $data['trailer_display'.$i] = $row['trailers_id'] > 0 ?  'inline' : 'none';
-       $data['streaming_display'.$i] = $row['streaming_products_id'] > 0 ?  'inline' : 'none';
+       $data['streaming_display'.$i] = $row['streaming_available'] == "1" ?  'inline' : 'none';
        $data['star'.$i] = $row['rating'];
        $data['description'.$i] = $row['products_description'];
        
