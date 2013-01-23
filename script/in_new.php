@@ -7,7 +7,7 @@ class in_new extends Script {
 	}
 	public function execute($mail_id)
 	{
-		$sql_data='select c.customers_email_address as customers_email, c.*,p.products_id products_id,osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
+		$sql_data='select c.customers_email_address as customers_email, c.*,p.products_id products_id, products_type, osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
 		         join orders o on osh.orders_id = o.orders_id 
 		         join customers c on o.customers_id = c.customers_id 
 		         join orders_products op on op.orders_id = o.orders_id 
@@ -198,20 +198,28 @@ class in_new extends Script {
 			
 			$i++;
 		}
-
-		$request =  'http://partners.thefilter.com/DVDPostService';
-		$format = 'RecommendationService.ashx';   // this can be xml, json, html, or php
-		$args =  'cmd=DVDRecommendDVDs';
-		$args .= '&id='.$data['products_id'];
-		$args .= '&number=100';
-		$args .= '&includeAdult='.$adult.'&verbose=false&clientIp='.$_SERVER['REMOTE_ADDR'];
+   
+ $url = 'http://api181.thefilter.com/dvdpost/live/video('.$data['products_id'].')/recommendation/video?$take=30&$filter=availability%20gt%200.1%20AND%20genre%20eq%20'.$data['products_type'];
+		if ($data['customers_language']==3)
+		{
+		  $url .+ '%20AND%20language%20eq%20English';
+		}
+		else if ($data['customers_language']==2)
+		{
+		  $url .+ '%20AND%20subTitleLanguage%20eq%20Dutch';
+		}
+		else
+		{
+		  $url .+ '%20AND%20language%20eq%20French';
+		}
+	
 	
 	    // Get and config the curl session object
 	    // 
 	    // 
 		
 		#echo $request.'/'.$format.'?'.$args;
-	    $session = curl_init($request.'/'.$format.'?'.$args);
+	    $session = curl_init($url);
 	    curl_setopt($session, CURLOPT_HEADER, false);
 	    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 		    //execute the request and close
@@ -229,9 +237,9 @@ class in_new extends Script {
 		foreach ($recommend->children()->children() as $dvd) {
 		
 			if($i==0)
-				$list=$dvd['Id'];
+				$list=$dvd['id'];
 			else
-				$list.=','.$dvd['Id'];
+				$list.=','.$dvd['id'];
 			$i++;
 		}
 		  if(empty($list))
@@ -263,7 +271,7 @@ class in_new extends Script {
 		$nb=tep_db_num_rows($recom_query);
 		if($nb==0)
 		{
-			$data['recom_visible'] = 'none';
+			$data['recom_visible'] = 'none !important;';
 		}
 		else
 		{
@@ -277,7 +285,7 @@ class in_new extends Script {
 			$data['recom_title_'.$i] = '';
 			$data['recom_id_'.$i] = '';
 			$data['recom_image_'.$i] = '';
-			$data['recom_visible_'.$i]='none';
+			$data['recom_visible_'.$i]='none !important';
 			$data['recom_kind_'.$i] = 'dvd';
 			$rating_product =  0 ;
 			for($j = 0 ; $j < 5 ; $j++)
@@ -293,7 +301,7 @@ class in_new extends Script {
 			$data['recom_id_'.$i] = $recom['products_id'];
 			$data['recom_image_'.$i] = $recom['products_image_big'];
 			$data['recom_visible_'.$i]='';
-			$data['recom_kind_'.$i] = $data['products_type'] == 'blueray'? 'bluray': 'dvd';
+			$data['recom_kind_'.$i] = $data['products_media'] == 'BlueRay'? 'bluray': 'dvd';
 			
 			
 			$rating_product =  $recom['rating_count'] > 0 ? round(($recom['rating_users'] / $recom['rating_count']) * 2) : 0 ;
