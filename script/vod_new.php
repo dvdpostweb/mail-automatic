@@ -8,11 +8,11 @@ class vod_new extends Script {
 	public function execute($mail_id)
 	{
 		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name
-					from vod_wishlists v
-					join streaming_products sp on sp.imdb_id = v.imdb_id
-					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
-					where expire_at > now() and available = 1 and status = "online_test_ok" and available_from = date(now())
-					group by v.imdb_id, c.customers_id;';
+    					from vod_wishlists v
+    					join streaming_products sp on sp.imdb_id = v.imdb_id
+    					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
+    					where ((expire_at > now()  and available_from = date(now())) or (expire_backcatalogue_at > now()  and available_backcatalogue_from = date(now()))) and available = 1 and status = "online_test_ok"
+    					group by v.imdb_id, c.customers_id;';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
