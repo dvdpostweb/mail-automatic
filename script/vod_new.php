@@ -11,7 +11,7 @@ class vod_new extends Script {
     					from vod_wishlists v
     					join streaming_products sp on sp.imdb_id = v.imdb_id
     					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
-    					where ((expire_at > now()  and available_from = date(now())) or (expire_backcatalogue_at > now()  and available_backcatalogue_from = date(now()))) and available = 1 and status = "online_test_ok"
+    					where customers_abo=1 and ((expire_at > now()  and available_from = date(now())) or (expire_backcatalogue_at > now()  and available_backcatalogue_from = date(now()))) and available = 1 and status = "online_test_ok"
     					group by v.imdb_id, c.customers_id;';
 		$this->data = tep_db_query($sql_data);
 	}
