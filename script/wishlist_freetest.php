@@ -7,7 +7,7 @@ class Wishlist_Freetest extends Script {
 	}
 	public function execute($mail_id)
 	{
-		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30))) as min_size, pa.qty_at_home
+		$sql_data='select c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit >= 2 and qty_credit <= 4,10,if(qty_credit >= 5 and qty_credit <= 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30))) as min_size, pa.qty_at_home
 						from customers c
 						join `customer_attributes` ca on customers_id = customer_id 
 						left join wishlist w on (w.customers_id = c.customers_id)
@@ -22,7 +22,7 @@ class Wishlist_Freetest extends Script {
 						and (select date < Date_add(now(), interval -1 day) from abo a where a.`action` in (6,8,1 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) =1
 						and (( datediff(now(),hist.d) > 6) or (hist.customer_id is null)) and pa.qty_credit !=10000
 						group by c.customers_id
-						having size < if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30)))';
+						having size < if(qty_credit >= 2 and qty_credit <= 4,10,if(qty_credit >= 5 and qty_credit <= 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30)))';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)

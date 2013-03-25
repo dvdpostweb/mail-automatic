@@ -7,7 +7,7 @@ class Wishlist_paid extends Script {
 	}
 	public function execute($mail_id)
 	{
-		$sql_data='select (select count(*) from orders where customers_id = c.customers_id and date_purchased> adddate(now(),-90)) as order_count,c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit >= 2 or qty_credit <= 4,10,if(qty_credit >= 6 or qty_credit <= 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30))) as min_size,pa.qty_at_home
+		$sql_data='select (select count(*) from orders where customers_id = c.customers_id and date_purchased> adddate(now(),-90)) as order_count,c.customers_id,count(w.wl_id) as size,customers_language,customers_email_address as customers_email,customers_firstname as firstname,customers_lastname as lastname,customers_gender,pa.qty_credit, if(qty_credit >= 2 and qty_credit <= 4,10,if(qty_credit >= 5 and qty_credit <= 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30))) as min_size,pa.qty_at_home
 
     								from customers c
     								join `customer_attributes` ca on customers_id = customer_id 
@@ -21,7 +21,7 @@ class Wishlist_paid extends Script {
     								and c.customers_abo_dvd_norm > 0 and c.customers_abo_dvd_adult = 0
     								and (select a.`action` from abo a where a.`action` in (7,17 ) and a.customerid = c.customers_id order by a.abo_id desc limit 1) = 7 and sleep = 0 and pa.qty_credit !=10000
     								group by c.customers_id
-    								having order_count > 0 and size < if(qty_credit >= 2 or qty_credit <= 4,10,if(qty_credit >= 6 or qty_credit <= 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30)));';
+    								having order_count > 0 and size < if(qty_credit >= 2 and qty_credit <= 4,10,if(qty_credit >= 5 and qty_credit <= 8,20,if(qty_credit = 0 ,if(qty_at_home = 2,10,if(qty_at_home = 1,10,30)),30)));';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
