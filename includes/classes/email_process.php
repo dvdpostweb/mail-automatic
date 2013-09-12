@@ -68,7 +68,7 @@ class EmailProcess {
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
-		$mail->Host='192.168.100.11';
+		$mail->Host='mail.dvdpost.local';
 		$mail->From='dvdpost@dvdpost.be';
 		$mail->FromName='DVDPost';
 		$mail->AddAddress($recipient);
