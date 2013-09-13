@@ -82,6 +82,9 @@ $links=array();
   }
   function tep_db_query($query, $link = 'db_link',$force_master=false) {
     global $links,$memcache;
+    #echo $query;
+    #var_dump($links);
+    
 	$nb_connect=count($links);
 	if(1==$nb_connect){
 		$connect=$links[0];
