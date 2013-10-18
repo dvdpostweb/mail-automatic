@@ -1,5 +1,5 @@
 <?php
-class Propose_vod extends Script {
+class Propose_vod2 extends Script {
 	var $data;
 	function __construct() {
 	}
