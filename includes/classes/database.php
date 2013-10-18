@@ -101,9 +101,6 @@ $links=array();
 		}
 	}
 	
-    if (STORE_DB_TRANSACTIONS == 'true') {
-       error_log("QUERY " . $query . "\n", 3, STORE_PAGE_PARSE_TIME_LOG);
-    }
 	if (stristr(strtolower($query),'select')===false)
 	{
 		if(stristr($query, 'customers_abo_discount_recurring_to_date') !== FALSE)
@@ -113,10 +110,6 @@ $links=array();
 	}	
     $result = mysql_query($query, $connect) or tep_db_error($query, mysql_errno(), mysql_error());
 	
-    if (STORE_DB_TRANSACTIONS == 'true') {
-       $result_error = mysql_error();
-       error_log("RESULT " . $result . " " . $result_error . "\n", 3, STORE_PAGE_PARSE_TIME_LOG);
-    }
     return $result;
   }
   function tep_begin()
