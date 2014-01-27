@@ -71,7 +71,6 @@ class Schedule {
 					$script = new $class_name();
 					
 					$script->execute($mail_id);
-					
 					if($script->get_data() !== false)
 					{
 						while($script_row=tep_db_fetch_array($script->data))
@@ -114,16 +113,21 @@ class Schedule {
 		$script_row = $script->add_data_row($script_row);
 		$language = $script_row['customers_language'];
 		$force_copy = $this->mail[$language]['force_copy'];
-		
 		if($script_row !== false)
 		{
-			if($mail_copy==1 || $force_copy==1)
+			if(($mail_copy==1 || $force_copy==1) && $script_row['customers_id'] > 0)
 				$status_history = $this->email_process->history($mail_id,$script_row);
+			elseif ($script_row['customers_id'] == 0)
+			{
+			  $status_history=0;
+			}
 			else
 				$status_history=0;
 			if($status_history !==false)
 			{
 				$script_row['mail_messages_sent_history_id']=$status_history;
+				var_dump($this->mail);
+				var_dump($script_row);
 				$formating_mail = $this->email_process->formating($this->mail,$script_row);
 				
 				if ($status_history !=0){

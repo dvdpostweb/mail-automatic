@@ -12,7 +12,6 @@ class MessageProcess {
 		$sql_insert2 = "INSERT INTO `message_tickets` (`created_at`, `updated_at`, `is_read`, `mail_id`, `ticket_id`, `user_id`, `data`, `mail_history_id`)";
 		$sql_insert2 .= " VALUES(now(), now(), 0, ".$mail_id.", ".$insert_id;
 		$sql_insert2 .= ", 55, '".addslashes($data)."', ".$mail_history_id.")";
-		echo $sql_insert2;
 		tep_db_query($sql_insert2);
 	}
 }
