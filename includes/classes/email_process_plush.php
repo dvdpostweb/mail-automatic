@@ -81,7 +81,8 @@ class EmailProcess {
 		$mail->AddReplyTo('info@plush.be');	
 		$mail->Subject=$formating_mail['messages_subject'];
 		$mail->Body=$formating_mail['messages_html'];
-
+		$mail->MsgHTML($formating_mail['messages_html']);
+    $mail->IsHTML(true);
     
 		#$mail = new PHPmailer();
 		#$mail->IsSMTP();
