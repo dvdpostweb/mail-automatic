@@ -126,8 +126,6 @@ class Schedule {
 			if($status_history !==false)
 			{
 				$script_row['mail_messages_sent_history_id']=$status_history;
-				var_dump($this->mail);
-				var_dump($script_row);
 				$formating_mail = $this->email_process->formating($this->mail,$script_row);
 				
 				if ($status_history !=0){

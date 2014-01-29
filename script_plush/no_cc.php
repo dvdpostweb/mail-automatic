@@ -9,7 +9,7 @@ class no_cc extends Script {
 	{
 		$sql_data='select c.*, concat(customers_firstname," ",customers_lastname) customers_name,email customers_email from customers c
     join (select a.*,max(date) created_at from abo a where action in(1,6,8) group by customerid) a on c.customers_id = customerid
-    where customers_abo = 1 and `customers_abo_payment_method`= 0 and date(a.created_at) = date(date_add(now(), interval -10 day))';
+    where customers_abo = 1 and `customers_abo_payment_method`= 0 and date(a.created_at) < date(date_add(now(), interval -10 day))';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
