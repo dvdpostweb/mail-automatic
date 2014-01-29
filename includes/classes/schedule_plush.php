@@ -122,7 +122,10 @@ class Schedule {
 			  $status_history=0;
 			}
 			else
+			{
 				$status_history=0;
+			}
+			echo "status_history ".$status_history;
 			if($status_history !==false)
 			{
 				$script_row['mail_messages_sent_history_id']=$status_history;

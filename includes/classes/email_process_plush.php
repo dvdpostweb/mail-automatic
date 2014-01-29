@@ -64,6 +64,7 @@ class EmailProcess {
 
 	function send($formating_mail,$data,$env)
 	{
+	  var_dump($data);
 		$recipient = ($env == 'production') ? $data['customers_email'] : 'gs@dvdpost.be';
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
