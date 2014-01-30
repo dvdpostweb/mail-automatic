@@ -597,6 +597,8 @@ class PHPMailer
      * @return bool
      */
     function SetLanguage($lang_type, $lang_path = "") {
+      echo $lang_path.'phpmailer.lang-'.$lang_type.'.php';
+      var_dump(file_exists($lang_path.'phpmailer.lang-'.$lang_type.'.php'));
         if(file_exists($lang_path.'phpmailer.lang-'.$lang_type.'.php'))
             include($lang_path.'phpmailer.lang-'.$lang_type.'.php');
         else if(file_exists($lang_path.'phpmailer.lang-en.php'))
@@ -1490,7 +1492,7 @@ class PHPMailer
      */
     function Lang($key) {
         if(count($this->language) < 1)
-            $this->SetLanguage("en"); // set the default language
+            $this->SetLanguage("en", './includes/classes/language/'); // set the default language
     
         if(isset($this->language[$key]))
             return $this->language[$key];

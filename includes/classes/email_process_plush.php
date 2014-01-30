@@ -62,10 +62,9 @@ class EmailProcess {
 		
 	}
 
-	function send($formating_mail,$data,$env)
+	function send($formating_mail,$data,$env, $schedule)
 	{
-	  var_dump($data);
-		$recipient = ($env == 'production') ? $data['customers_email'] : 'gs@dvdpost.be';
+		$recipient = ($env == 'production') ? $data['customers_email'] : 'gs@dvd';
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
@@ -96,6 +95,7 @@ class EmailProcess {
 
 		if(!$mail->Send()){ //Teste si le return code est ok.
 		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
+		  $schedule->error_log($mail->ErrorInfo);
 			return false;
 		}
 		else{	  
@@ -105,6 +105,7 @@ class EmailProcess {
 		unset($mail);
 		if(!$mail->Send()){ //Teste si le return code est ok.
 		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
+		  $schedule->error_log($mail->ErrorInfo);
 			return false;
 		}
 		else{	  
