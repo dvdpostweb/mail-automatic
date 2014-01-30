@@ -12,7 +12,7 @@ class no_cc extends Script {
     from customers c
     left join `mail_messages_sent_history` m on c.customers_id = m.customers_id and mail_messages_id = 628 
         join (select a.*,max(date) created_at from abo a where action in(1,6,8) group by customerid) a on c.customers_id = customerid
-        where customers_abo = 1 and `customers_abo_payment_method`= 0 and date(a.created_at) < date(date_add(now(), interval -10 day)) and m.mail_messages_sent_history_id is null limit 1;';
+        where customers_abo = 1 and `customers_abo_payment_method`= 0 and date(a.created_at) < date(date_add(now(), interval -10 day)) and m.mail_messages_sent_history_id is null;';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
