@@ -198,9 +198,11 @@ class Automatic {
 	public function initialize()
 	{
 		$mail_id=$this->getMailId();
+		var_dump($mail_id);
 		if(!empty($mail_id))
 		{
 			$sql='SELECT * FROM mail_messages where  mail_messages_id='.$mail_id;
+			echo $sql;
 			$query=tep_db_query($sql);
 			while($row=tep_db_fetch_array($query))	
 			{

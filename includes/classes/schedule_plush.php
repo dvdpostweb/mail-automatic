@@ -134,7 +134,6 @@ class Schedule {
 			{
 				$script_row['mail_messages_sent_history_id']=$status_history;
 				$formating_mail = $this->email_process->formating($this->mail,$script_row);
-				
 				if ($status_history !=0){
 					$this->email_process->set_dico($status_history);
 				}

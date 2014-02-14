@@ -64,7 +64,7 @@ class EmailProcess {
 
 	function send($formating_mail,$data,$env, $schedule)
 	{
-		$recipient = ($env == 'production') ? $data['customers_email'] : 'gs@dvd';
+		$recipient = ($env == 'production') ? $data['customers_email'] : 'gs@dvdpost.be';
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
