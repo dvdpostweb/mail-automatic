@@ -62,7 +62,7 @@ class EmailProcess {
 		
 	}
 
-	function send($formating_mail,$data,$env)
+	function send($formating_mail,$data,$env, $schedule)
 	{
 		$recipient = ($env == 'production') ? $data['customers_email'] : 'gs@dvdpost.be';
 		$mail = new PHPmailer();
@@ -78,6 +78,7 @@ class EmailProcess {
 
 		if(!$mail->Send()){ //Teste si le return code est ok.
 		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
+		  $schedule->error_log($mail->ErrorInfo);
 			return false;
 		}
 		else{	  

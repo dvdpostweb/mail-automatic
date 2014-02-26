@@ -103,16 +103,6 @@ class EmailProcess {
 		}
 		$mail->SmtpClose();
 		unset($mail);
-		if(!$mail->Send()){ //Teste si le return code est ok.
-		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
-		  $schedule->error_log($mail->ErrorInfo);
-			return false;
-		}
-		else{	  
-		  return true;
-		}
-		$mail->SmtpClose();
-		unset($mail);
 	}
 
 	function get_dico()

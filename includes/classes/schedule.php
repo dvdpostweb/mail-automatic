@@ -47,7 +47,11 @@ class Schedule {
 		tep_rollback();
 
 	}
-	
+	function error_log($message)
+	{
+	  $date = date('d/m/Y H:i:s');
+		fwrite($this->fp, $date.' '.$message."\n");
+	}
 
 	public function execute(){
 		$sql='SELECT * FROM automatic_emails where status="active" and adddate(date_last_execution,frequency_days) <= date(now()) and hour(now())=exe_time ';
@@ -131,7 +135,7 @@ class Schedule {
 				{
 					if($mail_copy==1 || $force_copy==1)
 					{
-						$mail_sent = $this->email_process->send($formating_mail,$script_row,$this->ENV);
+						$mail_sent = $this->email_process->send($formating_mail,$script_row,$this->ENV, $this);
 						$script_row['mail_messages_sent_history_id']=0;
 						$formating_mail = $this->email_process->formating($this->mail,$script_row);
 						if($script_row['customers_id'] > 0)
