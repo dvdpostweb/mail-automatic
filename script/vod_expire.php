@@ -8,19 +8,19 @@ class vod_expire extends Script {
 	public function execute($mail_id)
 	{
 		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name, date_format(date_add(now(), interval 15 day), "%d/%m/%Y") vod_expiration_date
-    		 from vod_wishlists v
-    					join streaming_products sp on sp.imdb_id = v.imdb_id
-    					join products p on p.imdb_id = sp.imdb_id
-    					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
-    					where customers_abo = 1 and expire_at = date(date_add(now(), interval 15 day)) and available =1 and status = "online_test_ok" and available_from < now() and products_status !=-1 and products_type="dvd_norm"
-    					group by v.imdb_id,c.customers_id;';
+        		 from vod_wishlists v
+        					join streaming_products sp on sp.imdb_id = v.imdb_id
+        					join products p on p.imdb_id = sp.imdb_id
+        					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
+        					where customers_abo = 1 and expire_at = date(date_add(now(), interval 15 day)) and available =1 and status = "online_test_ok" and available_from < now() and products_status !=-1 and products_type="dvd_norm" and sp.country="be"
+        					group by v.imdb_id,c.customers_id;';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
 	{
 		if (strtoupper($data['customers_gender'])=='F')
 		{
-			$key='TEXT_FEMALE_GENDER_'.$data['customers_language']; 			
+			$key='TEXT_FEMALE_GENDER_'.$data['customers_language'];
 		}
 		else
 		{
