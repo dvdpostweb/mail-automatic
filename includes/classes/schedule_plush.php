@@ -38,7 +38,7 @@ class Schedule {
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
 		$mail->Host='mail.dvdpost.local';
-		$mail->From='dvdpost@dvdpost.be';
+		$mail->SetFrom('dvdpost@dvdpost.be', 'DVDPost');
 		$mail->AddAddress('gs@dvdpost.be');
 		$mail->AddReplyTo('dvdpost@dvdpost.be');	
 		$mail->Subject='erreur mail automatique';

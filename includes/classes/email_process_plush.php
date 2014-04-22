@@ -68,31 +68,18 @@ class EmailProcess {
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
-		$mail->Host='smtp-auth.Register.be';
-		$mail->Port= 1025;
+		$mail->Host='email-smtp.eu-west-1.amazonaws.com';
+		#$mail->Port= 465;
 		$mail->SMTPAuth = true;
-    $mail->Username = "info@plush.be";
-    $mail->Password = "fireball18";
+		$mail->SMTPSecure = "tls"; 
+    $mail->Username = "AKIAICQS7KIVA5N62SKQ";
+    $mail->Password = "Au/ZyAC8yBAZGGSPdGDNEz00v2biQZPjUnxpd+qLl3Xn";
     
-		$mail->From='info@plush.be';
-		$mail->FromName='Plush';
+		$mail->SetFrom('info@plush.be', 'Plush');
 		$mail->AddAddress($recipient);
-		$mail->AddReplyTo('info@plush.be');	
+		#$mail->AddReplyTo('info@plush.be');	
 		$mail->Subject=$formating_mail['messages_subject'];
 		$mail->Body=$formating_mail['messages_html'];
-    #$mail->SMTPDebug = true;    
-    #$mail->Debugoutput = 'echo';
-		#$mail = new PHPmailer();
-		#$mail->IsSMTP();
-		#$mail->IsHTML(true);
-		#$mail->Host='mail.dvdpost.local';
-		#$mail->From='dvdpost@dvdpost.be';
-		#$mail->FromName='DVDPost';
-		#$mail->AddAddress($recipient);
-		#$mail->AddReplyTo('dvdpost@dvdpost.be');	
-		#$mail->Subject=$formating_mail['messages_subject'];
-		#$mail->Body=$formating_mail['messages_html'];
-
 		if(!$mail->Send()){ //Teste si le return code est ok.
 		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
 		  $schedule->error_log($mail->ErrorInfo);

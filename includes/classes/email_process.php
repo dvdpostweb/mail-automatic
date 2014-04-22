@@ -69,8 +69,7 @@ class EmailProcess {
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
 		$mail->Host='mail.dvdpost.local';
-		$mail->From='dvdpost@dvdpost.be';
-		$mail->FromName='DVDPost';
+		$mail->SetFrom('dvdpost@dvdpost.be', 'DVDPost');
 		$mail->AddAddress($recipient);
 		$mail->AddReplyTo('dvdpost@dvdpost.be');	
 		$mail->Subject=$formating_mail['messages_subject'];
