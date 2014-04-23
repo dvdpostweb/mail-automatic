@@ -1,6 +1,6 @@
 <?php
 
-class Birthday {
+class Birthday extends Script  {
 	var $mail;
 	var $data;
 	function __construct() {
