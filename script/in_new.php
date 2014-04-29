@@ -199,7 +199,7 @@ class in_new extends Script {
 			$i++;
 		}
    
- $url = 'http://api181.thefilter.com/dvdpost/live/video('.$data['products_id'].')/recommendation/video?$take=30&$filter=availability%20gt%200.1%20AND%20genre%20eq%20'.$data['products_type'];
+/* $url = 'http://api181.thefilter.com/dvdpost/live/video('.$data['products_id'].')/recommendation/video?$take=30&$filter=availability%20gt%200.1%20AND%20genre%20eq%20'.$data['products_type'];
 		if ($data['customers_language']==3)
 		{
 		  $url .+ '%20AND%20language%20eq%20English';
@@ -268,7 +268,8 @@ class in_new extends Script {
 			$listing_recom_sql = $listing_sql . ' order by rand() limit 7';
 			$recom_query = tep_db_query($listing_recom_sql);
 		
-		$nb=tep_db_num_rows($recom_query);
+		$nb=tep_db_num_rows($recom_query);*/
+		$nb = 0;
 		if($nb==0)
 		{
 			$data['recom_visible'] = 'none !important;';
