@@ -10,7 +10,7 @@ class mobistar_relaunch extends Script {
 		$sql_data='select c.email customers_email, 1 customers_language, c.* from `activation_code` ac
     join customers c on c.customers_id = ac.customers_id 
     join abo a on a.customerid = c.customers_id and action=4
-    where activation_code like "MB%" and campaign ="mobistar" and ac.customers_id >0 and customers_registration_step=90 and a.date between date_add(now(), interval -100 day) and now()
+    where activation_code like "MB%" and campaign ="mobistar" and ac.customers_id >0 and customers_registration_step=90 and a.date between date_add(now(), interval -1 day) and now()
     group by ac.customers_id';
 		$this->data = tep_db_query($sql_data);
 	}
