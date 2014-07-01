@@ -33,7 +33,7 @@ class exp extends Script {
 	    JOIN `lists` l ON l.product_id = p.`products_id` 
 	    join streaming_products sp on p.imdb_id = sp.imdb_id 
 	    join `products_description` pd on p.products_id = pd.products_id and pd.language_id = ".$data['customers_language']."
-	    WHERE (l.".$list_lang." = 1) and available =1 and source = 'alphanetworks' and status = 'online_test_ok' and ( (available_from < now() and expire_at > now()) or (available_backcatalogue_from < now() and expire_backcatalogue_at > now())) and country = 'BE' group by p.products_id limit 4";
+	    WHERE (l.".$list_lang." = 1) and available =1 and source = 'alphanetworks' and status = 'online_test_ok' and ( (available_from < now() and expire_at > now()) or (available_backcatalogue_from < now() and expire_backcatalogue_at > now())) and country = 'BE' group by p.products_id order by l.id desc limit 4";
 	    $query_list=tep_db_query($sql_list,'db_link',true);
 	    $i=1;
 	    
