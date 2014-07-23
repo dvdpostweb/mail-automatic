@@ -10,7 +10,7 @@ class exp extends Script {
 		$sql_data='select p.email, p.email customers_email, 0 customers_id, locale_id customers_language 
     from streaming_codes s
     join prospects p on s.email = p.email
-    where TIMESTAMPDIFF(minute, used_at,now()) >= 30 and TIMESTAMPDIFF(minute, used_at,now()) < 90 and (name like "EXP%" or name like "TEXP%" or name like "SEXP%" or name like "FEXP%" or name like "WEXP%" ) ';
+    where TIMESTAMPDIFF(minute, used_at,now()) >= 30 and TIMESTAMPDIFF(minute, used_at,now()) < 90 and (name like "EXP%" or name like "TEXP%" or name like "SEXP%" or name like "FEXP%" or name like "WEXP%" or name like "PEXP%" ) ';
 		$this->data = tep_db_query($sql_data);
 	}
 	function add_data_row($data)
