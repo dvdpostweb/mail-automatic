@@ -68,13 +68,18 @@ class EmailProcess {
 		$mail = new PHPmailer();
 		$mail->IsSMTP();
 		$mail->IsHTML(true);
-		$mail->Host='mail.dvdpost.local';
+		$mail->Host='email-smtp.eu-west-1.amazonaws.com';
+		#$mail->Port= 465;
+		$mail->SMTPAuth = true;
+		$mail->SMTPSecure = "tls"; 
+    $mail->Username = "AKIAICQS7KIVA5N62SKQ";
+    $mail->Password = "Au/ZyAC8yBAZGGSPdGDNEz00v2biQZPjUnxpd+qLl3Xn";
+    
 		$mail->SetFrom('dvdpost@dvdpost.be', 'DVDPost');
 		$mail->AddAddress($recipient);
-		$mail->AddReplyTo('dvdpost@dvdpost.be');	
+		#$mail->AddReplyTo('info@plush.be');	
 		$mail->Subject=$formating_mail['messages_subject'];
 		$mail->Body=$formating_mail['messages_html'];
-
 		if(!$mail->Send()){ //Teste si le return code est ok.
 		  echo $mail->ErrorInfo; //Affiche le message d'erreur (ATTENTION:voir section 7)
 		  $schedule->error_log($mail->ErrorInfo);
