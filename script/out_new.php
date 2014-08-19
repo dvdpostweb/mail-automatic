@@ -58,7 +58,7 @@ class out_new extends Script {
 			else
 				$actors_links.= '<a href="http://private.dvdpost.com/'.$lang_short.'/actors/'.$actors['actors_id'].'/products" target="_BLANK" style="color: rgb(69, 69, 69); ">'.$actors['actors_name'].'</a>, ';
 		}
-		$actors_links = substr($actors_links,0,-2);
+		$actors_links = utf8_encode(substr($actors_links,0,-2));
 		
 		if($data['products_media'] == 'BlueRay')
 		{
@@ -77,7 +77,7 @@ class out_new extends Script {
 			{
 				$data['director_id']= $product['studio_id'];
 				$data['director_type']= "studios";
-				$data['director_name']= $product['studio_name'];
+				$data['director_name']= utf8_encode($product['studio_name']);
 			}
 			else
 			{
@@ -96,7 +96,7 @@ class out_new extends Script {
 			{
 				$data['director_id']= $product['directors_id'];
 				$data['director_type']= "directors";
-				$data['director_name']= $product['directors_name'];
+				$data['director_name']= utf8_encode($product['directors_name']);
 			}
 			else
 			{
@@ -109,9 +109,9 @@ class out_new extends Script {
 		}
 		$data['list_actors']= $actors_links;
 		$data['product_image']= $product['products_image_big'];
-		$data['product_description']= $this->truncate($product['products_description'],1000);
+		$data['product_description']= utf8_encode($this->truncate($product['products_description'],1000));
 		$data['product_year']= $product['products_year'];
-		$data['product_title']= $product['products_name'];
+		$data['product_title']= utf8_encode($product['products_name']);
 		
 		$rating_product =  $product['rating_count'] > 0 ? round(($product['rating_users'] / $product['rating_count']) * 2) : 0 ;
 		for($i = 0 ; $i < 5 ; $i++)
@@ -163,7 +163,7 @@ class out_new extends Script {
 		$recom_query = tep_db_query($listing_recom_sql);
 		$i=1;
 		while ($recom = tep_db_fetch_array($recom_query)) {
-			$data['vod_title_'.$i] = $recom['products_name'];
+			$data['vod_title_'.$i] = utf8_encode($recom['products_name']);
 			$data['vod_id_'.$i] = $recom['products_id'];
 			$data['vod_imdb_id_'.$i] = $recom['imdb_id'];
 			$data['vod_image_'.$i] = $recom['products_image_big'];
@@ -300,7 +300,7 @@ class out_new extends Script {
 		}
 		$i=1;
 		while ($recom = tep_db_fetch_array($recom_query)) {
-			$data['recom_title_'.$i] = $recom['products_name'];
+			$data['recom_title_'.$i] = utf8_encode($recom['products_name']);
 			$data['recom_id_'.$i] = $recom['products_id'];
 			$data['recom_image_'.$i] = $recom['products_image_big'];
 			$data['recom_visible_'.$i]='';
