@@ -335,7 +335,7 @@ class out_new extends Script {
 	function post_process($data)
 	{
 		$sql_up ='update orders_status_history set customer_notified  = 1 where orders_id =  '. $data['orders_id'];
-		#$status = tep_db_query($sql_up);
+		$status = tep_db_query($sql_up);
 		return $status;
 	}
 	
