@@ -29,7 +29,7 @@ class EmailProcess {
 				$this->key_missing=$item;
 				return false;
 			}
-			$text = str_replace('$$$'.$item.'$$$',$data[$item],$text);
+			$text = str_replace('$$$'.$item.'$$$',$this->replace_accents($data[$item]),$text);
 			if($set_dico == true)
 			{
 				if (strpos($this->dico, $item) === false) 
@@ -54,6 +54,12 @@ class EmailProcess {
 	function get_key_missing()
 	{
 		return $this->key_missing;
+	}
+	function replace_accents($str) {
+   $str = htmlentities($str, ENT_COMPAT);
+   $str = preg_replace('/&lt;/','<',$str);
+	 $str = preg_replace('/&gt;/','>',$str);
+   return $str;
 	}
 	function set_dico($id)
 	{
