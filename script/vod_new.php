@@ -7,9 +7,10 @@ class vod_new extends Script {
 	}
 	public function execute($mail_id)
 	{
-		$sql_data='select customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name
+		$sql_data='select products_type, customers_email_address as customers_email,c.customers_id,customers_language, v.imdb_id,customers_gender, concat(customers_firstname," ",customers_lastname) customers_name
     					from vod_wishlists v
     					join streaming_products sp on sp.imdb_id = v.imdb_id
+    					join products p on p.imdb_id = sp.imdb_id
     					join customers c on customer_id = customers_id and (customers_language = language_id or customers_language = subtitle_id)
     					where customers_abo=1 and ((expire_at > now()  and available_from = date(now())) or (expire_backcatalogue_at > now() and expire_at != `available_backcatalogue_from` and available_backcatalogue_from = date(now()))) and available = 1 and status = "online_test_ok" and is_ppv =0 and sp.country="be"
     					group by v.imdb_id, c.customers_id;';
