@@ -15,7 +15,7 @@ class Indisponible_vod extends Script {
 						 join products_description pd on pd.products_id = product_id and language_id = c.customers_language
 						 join streaming_products on streaming_products.`imdb_id`= p.imdb_id and streaming_products.available_from < now() and streaming_products.expire_at > now() and streaming_products.status = 'online_test_ok'  
 						 where products_availability = -2 and c.customers_abo = 1 and products_type = 'DVD_NORM' and products_status !=-1 
-						and not exists (select * from products_dvd pd where pd.products_dvd_status in (1,21,24,25,23) and pd.products_id = p.products_id)
+						and not exists (select * from products_dvd pd where pd.products_dvd_status in (1,21,24,25,23) and pd.products_id = p.products_id)  and site !='nl'
 
 						group by products_series_id,p.imdb_id,c.customers_id ;";
 		$this->data = tep_db_query($sql_data);

@@ -12,7 +12,7 @@ class Reconduction_earlier extends Script {
 		$row_abo=tep_db_fetch_array($abo);
 		$abo_process_id = $row_abo['aboprocess_id'];*/
 		
-		$sql_data='select customers_gender,  customers_lastname as lastname,customers_email_address as customers_email, date_format(customers_abo_validityto,"%d/%c/%X") datereconduction,customers_language,c.customers_id
+		$sql_data='select customers_gender,  customers_lastname as lastname,customers_email_address as customers_email, date_format(customers_abo_validityto,"%d/%c/%X") datereconduction,customers_language,c.customers_id, site
 		from customers c
 		left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 554 group by customer_id) hist on c.customers_id = hist.customer_id
 		where customers_abo_dvd_credit = 0
@@ -30,6 +30,18 @@ class Reconduction_earlier extends Script {
 	}
 	function add_data_row($data)
 	{
+		if($data['site'] == 'nl')
+    {
+      $data['host'] = 'www.dvdpost.nl';
+      $data['host_private'] = 'private.dvdpost.nl';
+      $data['host_public'] = 'public.dvdpost.nl';
+    }
+    else
+    {
+      $data['host'] = 'www.dvdpost.be';
+      $data['host_private'] = 'private.dvdpost.com';
+      $data['host_public'] = 'public.dvdpost.com';
+    }
 		$key='GENDER_'.strtoupper($data['customers_gender']).'_'.$data['customers_language'];
 		$data['gender']=$this->get_key($key);
 		if($data['size']==0)

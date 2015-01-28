@@ -37,13 +37,13 @@ class Step31 extends Script{
 	}
 	public function execute($mail_id)
 	{
-		$sql_data='(SELECT c.customers_id,c.customers_id as id, customers_language ,entityid ,customers_email_address,customers_email_address as customers_email,discount_code as promotion,discount_type as abo_type, discount_value as abo_value, discount_abo_validityto_type as type,discount_abo_validityto_value as value,abo_dvd_credit  ,pa.qty_credit
+		$sql_data='(SELECT c.customers_id,c.customers_id as id, customers_language ,entityid ,customers_email_address,customers_email_address as customers_email,discount_code as promotion,discount_type as abo_type, discount_value as abo_value, discount_abo_validityto_type as type,discount_abo_validityto_value as value,abo_dvd_credit  ,pa.qty_credit, site
 				 FROM customers c
 				 JOIN discount_code dc ON c.`activation_discount_code_id` = dc.discount_code_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
 				 where date(now()) = date(DATE_ADD( customers_info_date_account_created, INTERVAL 1 DAY )) and (customers_registration_step='.self::STEP31.' or customers_registration_step='.self::STEP32.' or customers_registration_step='.self::STEP33.') AND `activation_discount_code_type` = "d" and dc.group_id !=152
 							)union(
-				SELECT c.customers_id,c.customers_id as id, customers_language,entityid, customers_email_address,customers_email_address as customers_email,activation_code as promotion,1 as abo_type, 0 as abo_value, validity_type as type,validity_value as value,abo_dvd_credit ,pa.qty_credit
+				SELECT c.customers_id,c.customers_id as id, customers_language,entityid, customers_email_address,customers_email_address as customers_email,activation_code as promotion,1 as abo_type, 0 as abo_value, validity_type as type,validity_value as value,abo_dvd_credit ,pa.qty_credit, site
 				 FROM customers c
 				 JOIN activation_code dc ON c.`activation_discount_code_id` = dc.activation_id
 				 JOIN products_abo pa ON pa.products_id = `customers_abo_type`
@@ -53,6 +53,18 @@ class Step31 extends Script{
 
 	function add_data_row($data)
 	{
+		if($data['site'] == 'nl')
+    {
+      $data['host'] = 'www.dvdpost.nl';
+      $data['host_private'] = 'private.dvdpost.nl';
+      $data['host_public'] = 'public.dvdpost.nl';
+    }
+    else
+    {
+      $data['host'] = 'www.dvdpost.be';
+      $data['host_private'] = 'private.dvdpost.com';
+      $data['host_public'] = 'public.dvdpost.com';
+    }
 		$language=$data['customers_language'];
 		switch(strtolower($data['entry_country_id']))
 		{

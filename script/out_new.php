@@ -7,7 +7,7 @@ class out_new extends Script {
 	}
 	public function execute($mail_id)
 	{
-		$sql_data='select c.customers_email_address as customers_email, c.*,p.products_id products_id,products_type, osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
+		$sql_data='select c.site customer_site, c.customers_email_address as customers_email, c.*,p.products_id products_id,products_type, osh.*,o.*,date(o.date_purchased) date,pd.products_image_big products_image,pd.products_name,p.*  from (select osh.* from orders_status_history osh join (select orders_id,max(orders_status_history_id) orders_status_history_id from orders_status_history osh group by orders_id)xx  on xx.orders_status_history_id = osh.orders_status_history_id) osh 
 		         join orders o on osh.orders_id = o.orders_id 
 		         join customers c on o.customers_id = c.customers_id 
 		         join orders_products op on op.orders_id = o.orders_id 
@@ -18,6 +18,18 @@ class out_new extends Script {
 	}
 	function add_data_row($data)
 	{
+		if($data['customer_site'] == 'nl')
+    {
+      $data['host'] = 'www.dvdpost.nl';
+      $data['host_private'] = 'private.dvdpost.nl';
+      $data['host_public'] = 'public.dvdpost.nl';
+    }
+    else
+    {
+      $data['host'] = 'www.dvdpost.be';
+      $data['host_private'] = 'private.dvdpost.com';
+      $data['host_public'] = 'public.dvdpost.com';
+    }
 		if (strtoupper($data['customers_gender'])=='F')
 		{
 			$key='TEXT_FEMALE_GENDER_'.$data['customers_language']; 			
@@ -54,12 +66,12 @@ class out_new extends Script {
 		$actors_links='';
 		while ($actors = tep_db_fetch_array($actors_query)) {
 			if($product['products_type']=='DVD_ADULT')
-				$actors_links.= '<a href="http://private.dvdpost.com/'.$lang_short.'/adult/actors/'.$actors['actors_id'].'/products" target="_BLANK" style="color: rgb(69, 69, 69); ">'.$actors['actors_name'].'</a>, ';
+				$actors_links.= "<a href='http://".$data['host_private']."/".$lang_short."/adult/actors/".$actors['actors_id']."/products' target='_BLANK' style='color: rgb(69, 69, 69);'>".$actors['actors_name']."</a>, ";
 			else
-				$actors_links.= '<a href="http://private.dvdpost.com/'.$lang_short.'/actors/'.$actors['actors_id'].'/products" target="_BLANK" style="color: rgb(69, 69, 69); ">'.$actors['actors_name'].'</a>, ';
+				$actors_links.= "<a href='http://".$data['host_private']."/".$lang_short."/actors/".$actors['actors_id']."/products' target='_BLANK' style='color: rgb(69, 69, 69);'>".$actors['actors_name']."</a>, ";
 		}
 		$actors_links = substr($actors_links,0,-2);
-		
+		echo $actors_links;
 		if($data['products_media'] == 'BlueRay')
 		{
 			$data['media']='bluray';
@@ -110,7 +122,7 @@ class out_new extends Script {
 		$data['list_actors']= $actors_links;
 		$data['product_image']= $product['products_image_big'];
 		$data['product_description']= $this->truncate($product['products_description'],1000);
-		echo "\nend".$data['product_description'];
+		echo "\nend";
 		$data['product_year']= $product['products_year'];
 		$data['product_title']= $product['products_name'];
 		
