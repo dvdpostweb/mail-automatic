@@ -13,7 +13,7 @@ class Wishlist_Freetest extends Script {
 						left join wishlist w on (w.customers_id = c.customers_id)
 						left join products p on p.products_id = w.product_id
 						left join products_abo pa on c.customers_abo_type = pa.products_id
-						left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 453 group by customer_id) hist on c.customers_id = hist.customer_id
+						left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 652 group by customer_id) hist on c.customers_id = hist.customer_id
 						where c.customers_abo = 1 and customers_registration_step = 100 and c.customers_abo_suspended = 0 and only_vod=0
 						and (w.wishlist_type = "dvd_norm" or w.wishlist_type is null)
 						and (p.products_status <>-1 or p.products_status is null ) and (p.products_next = 0 or p.products_next is null) and (p.products_availability <> -1 or p.products_availability is null)

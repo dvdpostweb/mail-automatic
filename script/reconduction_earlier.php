@@ -14,7 +14,7 @@ class Reconduction_earlier extends Script {
 		
 		$sql_data='select customers_gender,  customers_lastname as lastname,customers_email_address as customers_email, date_format(customers_abo_validityto,"%d/%c/%X") datereconduction,customers_language,c.customers_id, site
 		from customers c
-		left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 554 group by customer_id) hist on c.customers_id = hist.customer_id
+		left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 648 group by customer_id) hist on c.customers_id = hist.customer_id
 		where customers_abo_dvd_credit = 0
 		      and customers_abo_type not in (5,6,7,8,9,41,42)
 		      and customers_abo = 1 
