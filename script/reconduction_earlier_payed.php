@@ -10,7 +10,7 @@ class Reconduction_earlier_payed extends Script {
 		$sql_data='select customers_gender,  customers_lastname as lastname,customers_email_address as customers_email, date_format(customers_abo_validityto,"%d/%c/%X") datereconduction,if(qty_credit = 2 or qty_credit = 4,10,if(qty_credit = 6 or qty_credit = 8,20,30)) as size,customers_language,c.customers_id, c.site customer_site
 		from customers c
 		left join products_abo pa on c.customers_abo_type = pa.products_id 
-		left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 555 group by customer_id) hist on c.customers_id = hist.customer_id
+		left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 649 group by customer_id) hist on c.customers_id = hist.customer_id
 		where customers_abo_dvd_credit = 0
 		      and customers_abo_type not in (5,6,7,8,9,41,42)
 		      and customers_abo = 1 
