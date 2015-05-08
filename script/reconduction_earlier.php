@@ -16,7 +16,7 @@ class Reconduction_earlier extends Script {
 		from customers c
 		left join (select customer_id, max(t.created_at) d from tickets t join message_tickets mt on t.id= mt.`ticket_id` where mail_id = 648 group by customer_id) hist on c.customers_id = hist.customer_id
 		where customers_abo_dvd_credit = 0
-		      and customers_abo_type not in (5,6,7,8,9,41,42)
+		      and customers_abo_type not in (5,6,7,8,9,41,42,133672,133671)
 		      and customers_abo = 1 
 		      and customers_registration_step = 100 
 		      and customers_abo_suspended = 0
