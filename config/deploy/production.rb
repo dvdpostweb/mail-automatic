@@ -3,7 +3,7 @@
 #############################################################
 
 set :application, "automatic"
-set :deploy_to, "/data/sites/benelux/mail-automatic-git"
+set :deploy_to, "/data/sites/benelux/mail-automatic-production"
 
 #############################################################
 #	Settings
@@ -19,8 +19,8 @@ set :scm_verbose, true
 #############################################################
 
 set :user, "automatic"
-set :domain, "npekin"
-#set :port, 22012
+set :domain, "217.112.190.50"
+set :port, 54051
 server domain, :app, :web
 role :db, domain, :primary => true
 
