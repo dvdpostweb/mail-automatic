@@ -8,7 +8,7 @@ class Schedule {
 	private $ENV = "production"; //default (can also be one 'test', 'production')
 	private $debug = true; //default (can also be one 'test', 'production')
 
-	private $verbose=false;
+	private @$verbose = false;
 	private $task_options;
 	private $script;
 	private $formating;
